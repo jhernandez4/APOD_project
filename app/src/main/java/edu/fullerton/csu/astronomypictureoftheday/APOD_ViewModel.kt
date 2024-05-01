@@ -1,13 +1,17 @@
 package edu.fullerton.csu.astronomypictureoftheday
 
 import android.util.Log
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import java.util.Calendar
 import java.util.Date
 import java.util.GregorianCalendar
 
 private const val TAG = "APOD_ViewModel"
-class APOD_ViewModel : ViewModel() {
+const val CURRENT_INDEX_KEY = "CURRENT_INDEX_KEY"
+
+class APOD_ViewModel(private val savedStateHandle: SavedStateHandle) : ViewModel() {
+
     init {
         Log.d(TAG, "ViewModel instance created")
     }
@@ -17,7 +21,13 @@ class APOD_ViewModel : ViewModel() {
         Log.d(TAG, "ViewModel instance about to be destroyed")
     }
 
-    private var currentDateCalendar: Calendar = GregorianCalendar()
+    private var currentDateCalendar: Calendar
+        // create calendar for the first time if not already created
+        get() = savedStateHandle.get(CURRENT_INDEX_KEY) ?: GregorianCalendar()
+        set(value) = savedStateHandle.set(CURRENT_INDEX_KEY, value)
+
+    val currentDate: Calendar
+        get() = currentDateCalendar
 
     fun incrementDate() {
         currentDateCalendar.add(Calendar.DAY_OF_MONTH, 1)
