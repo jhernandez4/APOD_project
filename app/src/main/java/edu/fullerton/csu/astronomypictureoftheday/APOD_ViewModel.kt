@@ -12,6 +12,7 @@ const val CURRENT_INDEX_KEY = "CURRENT_INDEX_KEY"
 
 class APOD_ViewModel(private val savedStateHandle: SavedStateHandle) : ViewModel() {
 
+    // commented out for JVM testing
 //    init {
 //        Log.d(TAG, "ViewModel instance created")
 //    }
@@ -42,9 +43,9 @@ class APOD_ViewModel(private val savedStateHandle: SavedStateHandle) : ViewModel
         currentDateCalendar.add(Calendar.DAY_OF_MONTH, -1)
     }
 
-    fun setDate(myCalendar: Calendar){
-        currentDateCalendar.set(Calendar.YEAR, myCalendar.get(Calendar.YEAR))
-        currentDateCalendar.set(Calendar.MONTH, myCalendar.get(Calendar.MONTH))
-        currentDateCalendar.set(Calendar.DAY_OF_MONTH, myCalendar.get(Calendar.DAY_OF_MONTH))
+    fun setDate(Year: Int, Month: Int, Day: Int){
+        currentDateCalendar.set(Calendar.YEAR, Year)
+        currentDateCalendar.set(Calendar.MONTH, Month)
+        currentDateCalendar.set(Calendar.DAY_OF_MONTH, Day)
     }
 }
