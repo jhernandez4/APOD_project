@@ -45,6 +45,9 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.7.0")
     implementation("androidx.activity:activity-ktx:1.9.0")
     testImplementation(libs.junit)
+    testImplementation("junit:junit:4.12")
+    testImplementation("junit:junit:4.12")
+    testImplementation("junit:junit:4.12")
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
 }
