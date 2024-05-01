@@ -9,8 +9,7 @@ import java.util.GregorianCalendar
 class APOD_ViewModelTest{
     @Test
     fun addsDayToCalendar(){
-        var savedStatehandle = SavedStateHandle()
-        var apodViewModel = APOD_ViewModel(savedStatehandle)
+        var apodViewModel = createViewModel()
 
         val initialDate = apodViewModel.currentDate.clone() as Calendar
 
@@ -30,12 +29,11 @@ class APOD_ViewModelTest{
 
     @Test
     fun decrementsDayToCalendar(){
-        var savedStatehandle = SavedStateHandle()
-        var apodViewModel = APOD_ViewModel(savedStatehandle)
+        var apodViewModel = createViewModel()
 
         val initialDate = apodViewModel.currentDate.clone() as Calendar
 
-        // Expected date is the current day plus one
+        // Expected date is the current day minus one
         val expectedDate = initialDate.clone() as Calendar
         expectedDate.add(Calendar.DAY_OF_MONTH, -1)
 
@@ -46,5 +44,33 @@ class APOD_ViewModelTest{
             expectedDate.get(Calendar.DAY_OF_MONTH),
             apodViewModel.currentDate.get(Calendar.DAY_OF_MONTH)
         )
+    }
+
+    @Test
+    fun setSpecificDateToCalendar(){
+        var apodViewModel = createViewModel()
+
+        // Date of the first posted picture for APOD by NASA
+        val year = 1995
+        val month = 6
+        val day = 16
+
+        val initialDate = apodViewModel.currentDate.clone() as Calendar
+
+        val expectedDate = initialDate.clone() as Calendar
+        expectedDate.set(Calendar.YEAR, year)
+        expectedDate.set(Calendar.MONTH, month)
+        expectedDate.set(Calendar.DAY_OF_MONTH, day)
+
+        apodViewModel.setDate(year, month, day)
+
+        assert(expectedDate.equals(apodViewModel.currentDate))
+    }
+
+    fun createViewModel(): APOD_ViewModel {
+        var savedStateHandle = SavedStateHandle()
+        var apodViewModel = APOD_ViewModel(savedStateHandle)
+
+        return apodViewModel
     }
 }
