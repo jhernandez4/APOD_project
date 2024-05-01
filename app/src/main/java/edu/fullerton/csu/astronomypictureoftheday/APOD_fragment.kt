@@ -26,4 +26,23 @@ class APOD_fragment : Fragment() {
         binding = FragmentApodBinding.inflate(layoutInflater, container, false)
         return binding.root
     }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        binding.apply {
+
+            btnPrev.setOnClickListener {
+                TODO("Connect with ViewModel")
+            }
+
+            btnNext.setOnClickListener {
+                TODO("Connect with ViewModel")
+            }
+
+            btnDatePicker.setOnClickListener {
+                TODO("Connect with ViewModel")
+            }
+        }
+    }
 }
