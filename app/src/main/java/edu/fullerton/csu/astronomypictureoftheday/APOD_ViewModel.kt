@@ -12,19 +12,24 @@ const val CURRENT_INDEX_KEY = "CURRENT_INDEX_KEY"
 
 class APOD_ViewModel(private val savedStateHandle: SavedStateHandle) : ViewModel() {
 
-    init {
-        Log.d(TAG, "ViewModel instance created")
-    }
-
-    override fun onCleared() {
-        super.onCleared()
-        Log.d(TAG, "ViewModel instance about to be destroyed")
-    }
+//    init {
+//        Log.d(TAG, "ViewModel instance created")
+//    }
+//
+//    override fun onCleared() {
+//        super.onCleared()
+//        Log.d(TAG, "ViewModel instance about to be destroyed")
+//    }
 
     private var currentDateCalendar: Calendar
-        // create calendar for the first time if not already created
-        get() = savedStateHandle.get(CURRENT_INDEX_KEY) ?: GregorianCalendar()
-        set(value) = savedStateHandle.set(CURRENT_INDEX_KEY, value)
+        // Retrieve the saved value or create a new Calendar instance if not available
+        get() = savedStateHandle.get(CURRENT_INDEX_KEY) ?: GregorianCalendar().apply {
+            savedStateHandle.set(CURRENT_INDEX_KEY, this)
+        }
+        // Update the saved value whenever currentDateCalendar is modified
+        set(value) {
+            savedStateHandle.set(CURRENT_INDEX_KEY, value)
+        }
 
     val currentDate: Calendar
         get() = currentDateCalendar
