@@ -62,8 +62,9 @@ class APOD_fragment : Fragment() {
 
                 // hard-coded values to test setDate functionality
                 // this is the first day an APOD was posted by NASA
+                // june 16, 1995
                 val year = 1995
-                val month = 6
+                val month = 5 // I think values are from 0 to 11. 5 is june
                 val day = 16
 
                 dateViewModel.setDate(year, month, day)
