@@ -21,14 +21,11 @@
 
     <Button
         android:id="@+id/btnDatePicker"
-        style="?android:spinnerStyle"
         android:layout_width="223dp"
         android:layout_height="53dp"
         android:layout_marginTop="16dp"
-        android:onClick="openDatePicker"
-        android:text="JAN 01 2020"
-        android:textColor="@color/black"
-        android:textSize="30sp"
+        android:text="Select Date"
+        android:textSize="24sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/ivImage" />
