@@ -9,7 +9,11 @@ import edu.fullerton.csu.astronomypictureoftheday.databinding.FragmentEnlargeBin
 
 class Enlarged_fragment: Fragment()
 {
-    private lateinit var binding: FragmentEnlargeBinding
+    private var _binding: FragmentEnlargeBinding? = null
+    private val binding
+        get() = checkNotNull(_binding) {
+            "cannot access binding because it is null. Is the view visible?"
+        }
 
     override fun onCreate(savedInstanceState: Bundle?)
     {
@@ -21,7 +25,7 @@ class Enlarged_fragment: Fragment()
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = FragmentEnlargeBinding.inflate(layoutInflater, container, false)
+        _binding = FragmentEnlargeBinding.inflate(layoutInflater, container, false)
         return binding.root
     }
 
@@ -48,5 +52,10 @@ class Enlarged_fragment: Fragment()
                 }
             }
         }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }
