@@ -7,7 +7,7 @@ import androidx.fragment.app.Fragment
 import edu.fullerton.csu.astronomypictureoftheday.APOD_fragment
 import edu.fullerton.csu.astronomypictureoftheday.databinding.FragmentEnlargeBinding
 
-class FragmentEnlarged: Fragment()
+class Enlarged_fragment: Fragment()
 {
     private lateinit var binding: FragmentEnlargeBinding
 
@@ -21,7 +21,6 @@ class FragmentEnlarged: Fragment()
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-
         binding = FragmentEnlargeBinding.inflate(layoutInflater, container, false)
         return binding.root
     }
@@ -40,15 +39,14 @@ class FragmentEnlarged: Fragment()
                 val imageViewWidth = imageView.width
                 val imageViewHeight = imageView.height
 
-                if(clickX < imageViewX || clickX > imageViewX + imageViewWidth || clickY < imageViewY || clickY > imageViewY + imageViewHeight)
+                if (clickX < imageViewX || clickX > imageViewX + imageViewWidth || clickY < imageViewY || clickY > imageViewY + imageViewHeight)
                 {
-                    val intent = Intent(this, APOD_fragment::class.java)
-                    startActivity(intent)
+                    // switching between fragments should be done using navigation graph
+                    // wait on implementing this fully
+//                    val intent = Intent(this, APOD_fragment::class.java)
+//                    startActivity(intent)
                 }
             }
         }
-    }
-    override fun onStart() {
-        super.onStart()
     }
 }
