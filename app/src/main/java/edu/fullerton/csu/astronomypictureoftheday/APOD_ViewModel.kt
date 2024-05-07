@@ -2,11 +2,9 @@ package edu.fullerton.csu.astronomypictureoftheday
 
 import android.content.Context
 import android.util.Log
-import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import java.util.Calendar
-import java.util.Date
 import java.util.GregorianCalendar
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
@@ -74,7 +72,6 @@ class APOD_ViewModel(private val savedStateHandle: SavedStateHandle) : ViewModel
                             currentPicture.postValue(response.body())
                         } else {
                             Log.e(TAG, "Error fetching picture: ${response.errorBody()?.string()}")
-                            decrementDate()
                         }
                     }
 
@@ -132,5 +129,20 @@ class APOD_ViewModel(private val savedStateHandle: SavedStateHandle) : ViewModel
         currentDateCalendar.set(Calendar.MONTH, Month - 1)
         currentDateCalendar.set(Calendar.DAY_OF_MONTH, Day)
         fetchPicture()  // Fetch new picture data after the date is updated
+    }
+
+    fun isCurrentDate(): Boolean {
+        val today = GregorianCalendar.getInstance()
+        Log.d(TAG, "Today's date is: ${today.time}, but not curr variable")
+        return currentDate.get(Calendar.YEAR) == today.get(Calendar.YEAR) &&
+                currentDate.get(Calendar.MONTH) == today.get(Calendar.MONTH) &&
+                currentDate.get(Calendar.DAY_OF_MONTH) == today.get(Calendar.DAY_OF_MONTH)
+    }
+
+    fun isFirstDate(): Boolean {
+        Log.d(TAG, "Comparing first date with current date, curr is: ${currentDate.time}")
+        return currentDate.get(Calendar.YEAR) == 1995 &&
+                currentDate.get(Calendar.MONTH) == 5 &&
+                currentDate.get(Calendar.DAY_OF_MONTH) == 16
     }
 }
