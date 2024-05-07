@@ -36,6 +36,9 @@ android {
     buildFeatures{
         viewBinding = true
     }
+    buildFeatures {
+        viewBinding = true
+    }
 }
 
 dependencies {
@@ -48,6 +51,12 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.7.0")
     implementation("androidx.activity:activity-ktx:1.9.0")
     implementation("androidx.fragment:fragment-ktx:1.6.2")
+    implementation("com.squareup.retrofit2:retrofit:2.9.0")
+    // Gson converter for Retrofit
+    implementation("com.squareup.retrofit2:converter-gson:2.9.0")
+    implementation ("androidx.lifecycle:lifecycle-livedata-ktx:2.3.1")
+    implementation ("com.github.bumptech.glide:glide:4.12.0")
+    annotationProcessor ("com.github.bumptech.glide:compiler:4.12.0")
     testImplementation(libs.junit)
     testImplementation("junit:junit:4.12")
     testImplementation("junit:junit:4.12")

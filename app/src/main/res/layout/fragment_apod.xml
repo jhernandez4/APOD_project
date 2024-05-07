@@ -20,15 +20,15 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <Button
-        android:id="@+id/btnDatePicker"
+        android:id="@+id/btnSelectDate"
         android:layout_width="223dp"
         android:layout_height="53dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="28dp"
         android:text="Select Date"
         android:textSize="24sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/ivImage" />
+        app:layout_constraintTop_toBottomOf="@+id/imageView" />
 
     <Button
         android:id="@+id/btnPrev"
@@ -39,7 +39,7 @@
         android:text="Button"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvDesc"
+        app:layout_constraintTop_toBottomOf="@+id/descriptionText"
         app:layout_constraintVertical_bias="0.718" />
 
     <Button
@@ -51,13 +51,13 @@
         android:text="Button"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvDesc"
+        app:layout_constraintTop_toBottomOf="@+id/descriptionText"
         app:layout_constraintVertical_bias="0.718" />
 
     <ImageView
-        android:id="@+id/ivImage"
-        android:layout_width="302dp"
-        android:layout_height="240dp"
+        android:id="@+id/imageView"
+        android:layout_width="319dp"
+        android:layout_height="224dp"
         android:layout_marginTop="28dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.495"
@@ -66,14 +66,13 @@
         app:srcCompat="@android:drawable/alert_light_frame" />
 
     <TextView
-        android:id="@+id/tvDesc"
+        android:id="@+id/descriptionText"
         android:layout_width="387dp"
         android:layout_height="233dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="32dp"
         android:text="TextView"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.47"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btnDatePicker" />
+        app:layout_constraintTop_toBottomOf="@+id/btnSelectDate" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
