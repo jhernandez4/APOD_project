@@ -130,6 +130,7 @@ class APOD_fragment : Fragment() {
                     .into(binding.imageView)
 
                 binding.descriptionText.text = it.explanation
+                binding.tvTitle.text = it.title
             }
         }
 
