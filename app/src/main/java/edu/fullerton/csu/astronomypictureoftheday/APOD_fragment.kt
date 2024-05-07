@@ -79,7 +79,7 @@ class APOD_fragment : Fragment() {
                 // update picture and description,author,etc from NASA
             }
 
-            btnSelectDate.setOnClickListener {
+            btnDatePicker.setOnClickListener {
                 // get date from date selected by user
                 // set the date with -> dateViewModel.setDate(year, month, day)
 
@@ -119,9 +119,9 @@ class APOD_fragment : Fragment() {
                     .load(it.url)
                     .placeholder(R.drawable.placeholder_background)
                     .error(R.drawable.error_image_background)
-                    .into(binding.imageView)
+                    .into(binding.ivImage)
 
-                binding.descriptionText.text = it.explanation
+                binding.tvDesc.text = it.explanation
                 binding.tvTitle.text = it.title
             }
         }
