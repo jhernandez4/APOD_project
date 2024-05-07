@@ -66,6 +66,7 @@ class APOD_ViewModel(private val savedStateHandle: SavedStateHandle) : ViewModel
                             currentPicture.postValue(response.body())
                         } else {
                             Log.e(TAG, "Error fetching picture: ${response.errorBody()?.string()}")
+                            decrementDate()
                         }
                     }
 
@@ -108,11 +109,13 @@ class APOD_ViewModel(private val savedStateHandle: SavedStateHandle) : ViewModel
 
     fun incrementDate() {
         currentDateCalendar.add(Calendar.DAY_OF_MONTH, 1)
+        Log.d(TAG, "Incremented date by 1: ${currentDate.time}")
         fetchPicture()  // Fetch new picture whenever date is changed
     }
 
     fun decrementDate() {
         currentDateCalendar.add(Calendar.DAY_OF_MONTH, -1)
+        Log.d(TAG, "Decremented date by 1: ${currentDate.time}")
         fetchPicture()  // Fetch new picture whenever date is changed
     }
 
