@@ -7,9 +7,7 @@ import androidx.fragment.app.DialogFragment
 import java.util.Calendar
 
 class CalendarDatePicker: DialogFragment() {
-    override fun onCreate(savedInstanceState: Bundle?): DatePickerDialog {
-        super.onCreate(savedInstanceState)
-
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val calendar = Calendar.getInstance()
         val initialYear = calendar.get(Calendar.YEAR)
         val initialMonth = calendar.get(Calendar.MONTH)

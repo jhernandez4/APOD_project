@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item android:title="Home"
+        android:id="@+id/home"
+        android:icon="@drawable/baseline_home_24"/>
+    <item android:title="Enlarged_image"
+        android:id="@+id/image"
+        android:icon="@drawable/baseline_fit_screen_24"/>
+    <item android:title="Calender"
+        android:id="@+id/calender"
+        android:icon="@drawable/baseline_calendar_month_24"/>
+    <item android:title="Gallery"
+        android:id="@+id/gallery"
+        android:icon="@drawable/baseline_collections_24"/>
+</menu>
