@@ -75,7 +75,6 @@ class APOD_fragment : Fragment() {
 
             btnPrev.setOnClickListener {
                 dateViewModel.decrementDate()
-                Log.d(TAG, "Decremented date by 1: ${dateViewModel.currentDate.time}")
                 // update picture and description,author,etc from NASA according to
                 // dateViewModel.currentDate.get(Calendar.YEAR)
                 // dateViewModel.currentDate.get(Calendar.MONTH)
@@ -85,7 +84,6 @@ class APOD_fragment : Fragment() {
 
             btnNext.setOnClickListener {
                 dateViewModel.incrementDate()
-                Log.d(TAG, "Incremented date by 1: ${dateViewModel.currentDate.time}")
                 // update picture and description,author,etc from NASA
             }
 
