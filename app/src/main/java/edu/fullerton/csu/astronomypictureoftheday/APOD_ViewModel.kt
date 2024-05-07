@@ -9,6 +9,8 @@ import java.util.Calendar
 import java.util.Date
 import java.util.GregorianCalendar
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.launch
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.Call
@@ -21,6 +23,12 @@ const val CURRENT_INDEX_KEY = "CURRENT_INDEX_KEY"
 const val BASE_URL = "https://api.nasa.gov/"
 class APOD_ViewModel(private val savedStateHandle: SavedStateHandle) : ViewModel() {
     private var apiKey: String? = null
+
+    init {
+        viewModelScope.launch{
+            fetchPicture()
+        }
+    }
 
     fun setApiKeyFromContext(context: Context) {
         apiKey = loadApiKey(context)
