@@ -21,6 +21,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.bumptech.glide.Glide
 import kotlinx.coroutines.launch
+import java.util.GregorianCalendar
 import java.util.Properties
 
 private const val TAG = "APOD_fragment"
@@ -59,16 +60,22 @@ class APOD_fragment : Fragment() {
                 dateViewModel.setApiKeyFromContext(requireContext())
                 // Call the fetchPicture method with context
                 observePicture()
+                binding.btnNext.isEnabled = !dateViewModel.isCurrentDate()
+                binding.btnPrev.isEnabled = !dateViewModel.isFirstDate()
             }
         }
 
         binding.apply {
             btnPrev.setOnClickListener {
                 dateViewModel.decrementDate()
+                btnNext.isEnabled = !dateViewModel.isCurrentDate()
+                btnPrev.isEnabled = !dateViewModel.isFirstDate()
             }
 
             btnNext.setOnClickListener {
                 dateViewModel.incrementDate()
+                btnNext.isEnabled = !dateViewModel.isCurrentDate()
+                btnPrev.isEnabled = !dateViewModel.isFirstDate()
                 // update picture and description,author,etc from NASA
             }
 
@@ -79,11 +86,13 @@ class APOD_fragment : Fragment() {
                 // hard-coded values to test setDate functionality
                 // this is the first day an APOD was posted by NASA
                 // june 16, 1995
-                val year = 2023
-                val month = 5 // I think values are from 0 to 11. 5 is june
+                val year = 1995
+                val month = 6 // I think values are from 0 to 11. 5 is june
                 val day = 16
 
                 dateViewModel.setDate(year, month, day)
+                btnPrev.isEnabled = !dateViewModel.isFirstDate()
+                btnNext.isEnabled = !dateViewModel.isCurrentDate()
                 Log.d(TAG, "Date set by user: ${dateViewModel.currentDate.time}")
                 dateViewModel.fetchPicture()
             }
