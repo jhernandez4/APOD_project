@@ -19,6 +19,7 @@ import android.net.Uri
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import kotlinx.coroutines.launch
 import java.util.GregorianCalendar
@@ -80,21 +81,16 @@ class APOD_fragment : Fragment() {
             }
 
             btnDatePicker.setOnClickListener {
-                // get date from date selected by user
-                // set the date with -> dateViewModel.setDate(year, month, day)
-
-                // hard-coded values to test setDate functionality
-                // this is the first day an APOD was posted by NASA
-                // june 16, 1995
-                val year = 1995
-                val month = 6 // I think values are from 0 to 11. 5 is june
-                val day = 16
-
-                dateViewModel.setDate(year, month, day)
-                btnPrev.isEnabled = !dateViewModel.isFirstDate()
-                btnNext.isEnabled = !dateViewModel.isCurrentDate()
-                Log.d(TAG, "Date set by user: ${dateViewModel.currentDate.time}")
-                dateViewModel.fetchPicture()
+                findNavController().navigate(R.id.select_date)
+//                val year = 1995
+//                val month = 6
+//                val day = 16
+//
+//                dateViewModel.setDate(year, month, day)
+//                btnPrev.isEnabled = !dateViewModel.isFirstDate()
+//                btnNext.isEnabled = !dateViewModel.isCurrentDate()
+//                Log.d(TAG, "Date set by user: ${dateViewModel.currentDate.time}")
+//                dateViewModel.fetchPicture()
             }
         }
     }
