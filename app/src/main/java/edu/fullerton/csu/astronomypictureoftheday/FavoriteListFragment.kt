@@ -5,8 +5,10 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.recyclerview.widget.LinearLayoutManager
 import edu.fullerton.csu.astronomypictureoftheday.databinding.FragmentFavoriteListBinding
 
 private const val TAG = "FavoriteListFragment"
@@ -30,6 +32,8 @@ class FavoriteListFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         _binding = FragmentFavoriteListBinding.inflate(inflater, container, false)
+
+        binding.favoriteRecyclerView.layoutManager = LinearLayoutManager(context)
         return binding.root
     }
 
