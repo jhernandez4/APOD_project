@@ -126,9 +126,25 @@ class APOD_ViewModel(private val savedStateHandle: SavedStateHandle) : ViewModel
 
     fun setDate(Year: Int, Month: Int, Day: Int){
         currentDateCalendar.set(Calendar.YEAR, Year)
-        currentDateCalendar.set(Calendar.MONTH, Month - 1)
+        currentDateCalendar.set(Calendar.MONTH, Month)
         currentDateCalendar.set(Calendar.DAY_OF_MONTH, Day)
+        Log.d(TAG, "Date set to: ${currentDate.time}")
         fetchPicture()  // Fetch new picture data after the date is updated
+    }
+
+    fun setCurrentDate(){
+        val today = GregorianCalendar.getInstance()
+        setDate(today.get(Calendar.YEAR), today.get(Calendar.MONTH), today.get(Calendar.DAY_OF_MONTH))
+        Log.d(TAG, "Setting date to current date: ${today.time}")
+        fetchPicture()
+    }
+
+    fun getCurrentDateFormatted(): String {
+        val month = currentDate.get(Calendar.MONTH)
+        val day = currentDate.get(Calendar.DAY_OF_MONTH)
+        val year = currentDate.get(Calendar.YEAR)
+
+        return "${month+1}/$day/$year"
     }
 
     fun isCurrentDate(): Boolean {
