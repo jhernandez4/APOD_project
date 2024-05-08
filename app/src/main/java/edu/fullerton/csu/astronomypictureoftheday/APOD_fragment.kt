@@ -62,8 +62,7 @@ class APOD_fragment : Fragment() {
                 dateViewModel.setApiKeyFromContext(requireContext())
                 // Call the fetchPicture method with context
                 observePicture()
-                binding.btnNext.isEnabled = !dateViewModel.isCurrentDate()
-                binding.btnPrev.isEnabled = !dateViewModel.isFirstDate()
+                updateUI()
             }
         }
         
@@ -71,29 +70,25 @@ class APOD_fragment : Fragment() {
             val newDate = bundle.getSerializable(CalendarDatePicker.BUNDLE_KEY_DATE) as Calendar
             Log.d(TAG, "Date picked is ${newDate.time}")
             dateViewModel.setDate(newDate.get(Calendar.YEAR), newDate.get(Calendar.MONTH), newDate.get(Calendar.DAY_OF_MONTH))
-            binding.btnNext.isEnabled = !dateViewModel.isCurrentDate()
-            binding.btnPrev.isEnabled = !dateViewModel.isFirstDate()
+            updateUI()
         }
 
         binding.apply {
             btnPrev.setOnClickListener {
                 dateViewModel.decrementDate()
-                btnNext.isEnabled = !dateViewModel.isCurrentDate()
-                btnPrev.isEnabled = !dateViewModel.isFirstDate()
+                updateUI()
             }
 
             btnNext.setOnClickListener {
                 dateViewModel.incrementDate()
-                btnNext.isEnabled = !dateViewModel.isCurrentDate()
-                btnPrev.isEnabled = !dateViewModel.isFirstDate()
+                updateUI()
                 // update picture and description,author,etc from NASA
             }
 
             // This button requires safe call operator
             btnCurrent?.setOnClickListener{
                 dateViewModel.setCurrentDate()
-                btnNext.isEnabled = !dateViewModel.isCurrentDate()
-                btnPrev.isEnabled = !dateViewModel.isFirstDate()
+                updateUI()
             }
 
             btnDatePicker.setOnClickListener {
@@ -126,6 +121,16 @@ class APOD_fragment : Fragment() {
 
                 binding.tvDesc.text = it.explanation
                 binding.tvTitle.text = it.title
+            }
+        }
+    }
+
+    private fun updateUI(){
+        binding.apply{
+            btnNext.isEnabled = !dateViewModel.isCurrentDate()
+            btnPrev.isEnabled = !dateViewModel.isFirstDate()
+            btnDatePicker.apply {
+                text = dateViewModel.getCurrentDateFormatted()
             }
         }
     }
