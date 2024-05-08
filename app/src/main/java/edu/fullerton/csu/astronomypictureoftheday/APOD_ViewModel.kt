@@ -132,6 +132,13 @@ class APOD_ViewModel(private val savedStateHandle: SavedStateHandle) : ViewModel
         fetchPicture()  // Fetch new picture data after the date is updated
     }
 
+    fun setCurrentDate(){
+        val today = GregorianCalendar.getInstance()
+        setDate(today.get(Calendar.YEAR), today.get(Calendar.MONTH), today.get(Calendar.DAY_OF_MONTH))
+        Log.d(TAG, "Setting date to current date: ${today.time}")
+        fetchPicture()
+    }
+
     fun isCurrentDate(): Boolean {
         val today = GregorianCalendar.getInstance()
         Log.d(TAG, "Today's date is: ${today.time}, but not curr variable")
