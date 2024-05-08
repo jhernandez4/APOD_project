@@ -1,5 +1,4 @@
 package edu.fullerton.csu.astronomypictureoftheday
-<<<<<<< HEAD
 
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
@@ -8,10 +7,10 @@ import android.animation.ObjectAnimator
 import android.graphics.Point
 import android.graphics.Rect
 import android.graphics.RectF
-=======
 import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.drawable.BitmapDrawable
 import androidx.lifecycle.MutableLiveData
->>>>>>> origin/main
 import android.os.Bundle
 import android.os.Debug
 import android.util.Log
@@ -29,6 +28,7 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import android.net.Uri
+import android.widget.ImageView
 import androidx.fragment.app.setFragmentResultListener
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -93,9 +93,14 @@ class APOD_fragment : Fragment() {
             updateUI()
         }
 
-            ivImage.setOnClickListener {
+            binding.ivImage.setOnClickListener {
                 Log.d(TAG, "TEST")
-                //zoomImageFromThumb(expandedImage, R.drawable.image1)
+
+                if (binding.expandedImage.visibility == View.VISIBLE) {
+                    setDismissLargeImageAnimation(binding.ivImage, RectF(), 1f)
+                } else {
+                    zoomImageFromThumb(binding.ivImage)
+                }
             }
 
         binding.apply {
@@ -127,13 +132,19 @@ class APOD_fragment : Fragment() {
         _binding = null
     }
 
-    private fun zoomImageFromThumb(thumbView: View, imageResId: Int) {
+    private fun zoomImageFromThumb(thumbView: ImageView) {
         // If there's an animation in progress, cancel it immediately and
         // proceed with this one.
         currentAnimator?.cancel()
 
+        val drawable = thumbView.drawable
+        if (drawable is BitmapDrawable)
+        {
+            val bitmap = drawable.bitmap
+        }
+
         // Load the high-resolution "zoomed-in" image.
-        binding.expandedImage.setImageResource(imageResId)
+        //binding.expandedImage.setImageResource(imageResId)
 
         // Calculate the starting and ending bounds for the zoomed-in image.
         val startBoundsInt = Rect()
@@ -222,37 +233,6 @@ class APOD_fragment : Fragment() {
             start()
         }
     }
-    private fun setDismissLargeImageAnimation(thumbView: View, startBounds: RectF, startScale: Float) {
-        // When the zoomed-in image is tapped, it zooms down to the original
-        // bounds and shows the thumbnail instead of the expanded image.
-        binding.expandedImage.setOnClickListener {
-            currentAnimator?.cancel()
-
-            // Animate the four positioning and sizing properties in parallel,
-            // back to their original values.
-            currentAnimator = AnimatorSet().apply {
-                play(ObjectAnimator.ofFloat(binding.expandedImage, View.X, startBounds.left)).apply {
-                    with(ObjectAnimator.ofFloat(binding.expandedImage, View.Y, startBounds.top))
-                    with(ObjectAnimator.ofFloat(binding.expandedImage, View.SCALE_X, startScale))
-                    with(ObjectAnimator.ofFloat(binding.expandedImage, View.SCALE_Y, startScale))
-                }
-                duration = shortAnimationDuration.toLong()
-                interpolator = DecelerateInterpolator()
-                addListener(object : AnimatorListenerAdapter() {
-
-                    override fun onAnimationEnd(animation: Animator) {
-                        thumbView.alpha = 1f
-                        binding.expandedImage.visibility = View.GONE
-                        currentAnimator = null
-                    }
-
-                    override fun onAnimationCancel(animation: Animator) {
-                        thumbView.alpha = 1f
-                        binding.expandedImage.visibility = View.GONE
-                        currentAnimator = null
-                    }
-                })
-                start()
 
     private fun loadApiKey(context: Context): String {
         val properties = Properties()
@@ -283,6 +263,47 @@ class APOD_fragment : Fragment() {
             btnPrev.isEnabled = !dateViewModel.isFirstDate()
             btnDatePicker.apply {
                 text = dateViewModel.getCurrentDateFormatted()
+            }
+        }
+    }
+    private fun setDismissLargeImageAnimation(thumbView: View, startBounds: RectF, startScale: Float) {
+        // When the zoomed-in image is tapped, it zooms down to the original
+        // bounds and shows the thumbnail instead of the expanded image.
+        binding.expandedImage.setOnClickListener {
+            currentAnimator?.cancel()
+
+            // Animate the four positioning and sizing properties in parallel,
+            // back to their original values.
+            currentAnimator = AnimatorSet().apply {
+                play(
+                    ObjectAnimator.ofFloat(
+                        binding.expandedImage,
+                        View.X,
+                        startBounds.left
+                    )
+                ).apply {
+                    with(ObjectAnimator.ofFloat(binding.expandedImage, View.Y, startBounds.top))
+                    with(ObjectAnimator.ofFloat(binding.expandedImage, View.SCALE_X, startScale))
+                    with(ObjectAnimator.ofFloat(binding.expandedImage, View.SCALE_Y, startScale))
+                }
+                duration = shortAnimationDuration.toLong()
+                interpolator = DecelerateInterpolator()
+                addListener(object : AnimatorListenerAdapter() {
+
+                    override fun onAnimationEnd(animation: Animator) {
+                        thumbView.alpha = 1f
+                        binding.expandedImage.visibility = View.GONE
+                        currentAnimator = null
+                    }
+
+                    override fun onAnimationCancel(animation: Animator) {
+                        thumbView.alpha = 1f
+                        binding.expandedImage.visibility = View.GONE
+                        currentAnimator = null
+                    }
+                })
+                start()
+
             }
         }
     }
