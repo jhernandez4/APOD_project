@@ -9,5 +9,13 @@
         android:id="@+id/APOD_fragment"
         android:name="edu.fullerton.csu.astronomypictureoftheday.APOD_fragment"
         android:label="APOD_fragment"
-        tools:layout="@layout/fragment_apod"/>
+        tools:layout="@layout/fragment_apod">
+        <action
+            android:id="@+id/select_date"
+            app:destination="@id/calendarDatePicker" />
+    </fragment>
+    <dialog
+        android:id="@+id/calendarDatePicker"
+        android:name="edu.fullerton.csu.astronomypictureoftheday.CalendarDatePicker"
+        android:label="CalendarDatePicker" />
 </navigation>
