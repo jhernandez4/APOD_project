@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/APOD_fragment">
+
+    <fragment
+        android:id="@+id/APOD_fragment"
+        android:name="edu.fullerton.csu.astronomypictureoftheday.APOD_fragment"
+        android:label="APOD_fragment"
+        tools:layout="@layout/fragment_apod">
+        <action
+            android:id="@+id/select_date"
+            app:destination="@id/calendarDatePicker" />
+    </fragment>
+    <dialog
+        android:id="@+id/calendarDatePicker"
+        android:name="edu.fullerton.csu.astronomypictureoftheday.CalendarDatePicker"
+        android:label="CalendarDatePicker" >
+        <argument
+            android:name="currentDate"
+            app:argType="java.util.Calendar" />
+    </dialog>
+</navigation>

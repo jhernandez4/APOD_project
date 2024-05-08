@@ -1,4 +1,5 @@
 package edu.fullerton.csu.astronomypictureoftheday
+<<<<<<< HEAD
 
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
@@ -7,6 +8,10 @@ import android.animation.ObjectAnimator
 import android.graphics.Point
 import android.graphics.Rect
 import android.graphics.RectF
+=======
+import android.content.Context
+import androidx.lifecycle.MutableLiveData
+>>>>>>> origin/main
 import android.os.Bundle
 import android.os.Debug
 import android.util.Log
@@ -16,11 +21,27 @@ import android.view.ViewGroup
 import android.view.animation.DecelerateInterpolator
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
 import edu.fullerton.csu.astronomypictureoftheday.databinding.FragmentApodBinding
 import java.util.Calendar
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import android.net.Uri
+import androidx.fragment.app.setFragmentResultListener
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.fragment.findNavController
+import com.bumptech.glide.Glide
+import kotlinx.coroutines.launch
+import java.util.GregorianCalendar
+import java.util.Properties
 
 private const val TAG = "APOD_fragment"
+private var _binding: FragmentApodBinding? = null
+private val binding get() = _binding!!
 
 class APOD_fragment : Fragment() {
 
@@ -54,50 +75,56 @@ class APOD_fragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.apply {
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED){
+                // Load the API key in Fragment
+                val apiKey = loadApiKey(requireContext())
+                dateViewModel.setApiKeyFromContext(requireContext())
+                // Call the fetchPicture method with context
+                observePicture()
+                updateUI()
+            }
+        }
+        
+        setFragmentResultListener(CalendarDatePicker.REQUEST_KEY_DATE){ _, bundle ->
+            val newDate = bundle.getSerializable(CalendarDatePicker.BUNDLE_KEY_DATE) as Calendar
+            Log.d(TAG, "Date picked is ${newDate.time}")
+            dateViewModel.setDate(newDate.get(Calendar.YEAR), newDate.get(Calendar.MONTH), newDate.get(Calendar.DAY_OF_MONTH))
+            updateUI()
+        }
 
             ivImage.setOnClickListener {
                 Log.d(TAG, "TEST")
                 //zoomImageFromThumb(expandedImage, R.drawable.image1)
             }
 
+        binding.apply {
             btnPrev.setOnClickListener {
                 dateViewModel.decrementDate()
-                Log.d(TAG, "Decremented date by 1: ${dateViewModel.currentDate.time}")
-                // update picture and description,author,etc from NASA according to
-                // dateViewModel.currentDate.get(Calendar.YEAR)
-                // dateViewModel.currentDate.get(Calendar.MONTH)
-                // dateViewModel.currentDate.get(Calendar.DAY_OF_MONTH)
-                // call updateAPOD()
+                updateUI()
             }
 
             btnNext.setOnClickListener {
                 dateViewModel.incrementDate()
-                Log.d(TAG, "Incremented date by 1: ${dateViewModel.currentDate.time}")
+                updateUI()
                 // update picture and description,author,etc from NASA
             }
 
+            // This button requires safe call operator
+            btnCurrent?.setOnClickListener{
+                dateViewModel.setCurrentDate()
+                updateUI()
+            }
+
             btnDatePicker.setOnClickListener {
-                // get date from date selected by user
-                // set the date with -> dateViewModel.setDate(year, month, day)
-
-                // hard-coded values to test setDate functionality
-                // this is the first day an APOD was posted by NASA
-                // june 16, 1995
-                val year = 1995
-                val month = 5 // I think values are from 0 to 11. 5 is june
-                val day = 16
-
-                dateViewModel.setDate(year, month, day)
-                Log.d(TAG, "Date set by user: ${dateViewModel.currentDate.time}")
-                // update picture and description,author,etc from NASA with new date
+                findNavController().navigate(APOD_fragmentDirections.selectDate(dateViewModel.currentDate))
             }
         }
     }
 
-    // function signature can be changed
-    fun updateAPOD(year: Int, month: Int, day: Int) {
-        // update ImageView and Text from NASA's api using the date passed in
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
     private fun zoomImageFromThumb(thumbView: View, imageResId: Int) {
@@ -226,9 +253,37 @@ class APOD_fragment : Fragment() {
                     }
                 })
                 start()
+
+    private fun loadApiKey(context: Context): String {
+        val properties = Properties()
+        context.resources.openRawResource(R.raw.api_keys).use { inputStream ->
+            properties.load(inputStream)
+        }
+        return properties.getProperty("nasa_api_key", "")
+    }
+
+    private fun observePicture() {
+        dateViewModel.currentPicture.observe(viewLifecycleOwner) { astronomyPicture ->
+            astronomyPicture?.let {
+                Glide.with(this)
+                    .load(it.url)
+                    .placeholder(R.drawable.placeholder_background)
+                    .error(R.drawable.error_image_background)
+                    .into(binding.ivImage)
+
+                binding.tvDesc.text = it.explanation
+                binding.tvTitle.text = it.title
+
             }
         }
     }
-
-
+    private fun updateUI(){
+        binding.apply{
+            btnNext.isEnabled = !dateViewModel.isCurrentDate()
+            btnPrev.isEnabled = !dateViewModel.isFirstDate()
+            btnDatePicker.apply {
+                text = dateViewModel.getCurrentDateFormatted()
+            }
+        }
+    }
 }

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Imagen De Astronomía Del Día</string>
+    <string name="next">Proximo</string>
+    <string name="prev">Anterior</string>
+    <string name="current">Actual</string>
+    <string name="selectDate">Seleccione fecha</string>
+</resources>

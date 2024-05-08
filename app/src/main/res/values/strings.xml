@@ -2,4 +2,8 @@
     <string name="app_name">AstronomyPictureOfTheDay</string>
     <string name="description_zoom_touch_close">Close Zoom</string>
     <string name="description_image_1">Image Description 1</string>
+    <string name="next">Next</string>
+    <string name="prev">Prev</string>
+    <string name="current">Current</string>
+    <string name="selectDate">Select Date</string>
 </resources>
