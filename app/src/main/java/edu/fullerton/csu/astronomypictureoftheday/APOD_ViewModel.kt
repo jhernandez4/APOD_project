@@ -139,6 +139,14 @@ class APOD_ViewModel(private val savedStateHandle: SavedStateHandle) : ViewModel
         fetchPicture()
     }
 
+    fun getCurrentDateFormatted(): String {
+        val month = currentDate.get(Calendar.MONTH)
+        val day = currentDate.get(Calendar.DAY_OF_MONTH)
+        val year = currentDate.get(Calendar.YEAR)
+
+        return "${month+1}/$day/$year"
+    }
+
     fun isCurrentDate(): Boolean {
         val today = GregorianCalendar.getInstance()
         Log.d(TAG, "Today's date is: ${today.time}, but not curr variable")
