@@ -89,17 +89,15 @@ class APOD_fragment : Fragment() {
                 // update picture and description,author,etc from NASA
             }
 
+            // This button requires safe call operator
+            btnCurrent?.setOnClickListener{
+                dateViewModel.setCurrentDate()
+                btnNext.isEnabled = !dateViewModel.isCurrentDate()
+                btnPrev.isEnabled = !dateViewModel.isFirstDate()
+            }
+
             btnDatePicker.setOnClickListener {
                 findNavController().navigate(APOD_fragmentDirections.selectDate(dateViewModel.currentDate))
-//                val year = 1995
-//                val month = 6
-//                val day = 16
-//
-//                dateViewModel.setDate(year, month, day)
-//                btnPrev.isEnabled = !dateViewModel.isFirstDate()
-//                btnNext.isEnabled = !dateViewModel.isCurrentDate()
-//                Log.d(TAG, "Date set by user: ${dateViewModel.currentDate.time}")
-//                dateViewModel.fetchPicture()
             }
         }
     }
