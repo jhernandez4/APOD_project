@@ -5,8 +5,12 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import edu.fullerton.csu.astronomypictureoftheday.databinding.ListItemFavoriteBinding
 
-class FavoriteHolder (val binding: ListItemFavoriteBinding)
+class FavoriteHolder (private val binding: ListItemFavoriteBinding)
     : RecyclerView.ViewHolder(binding.root){
+        fun bind(favorite: Favorite) {
+            binding.favoriteTitle.text = favorite.title
+            binding.favoriteDate.text = favorite.date.toString()
+        }
 }
 class FavoriteListAdapter(
     private val favorites: List<Favorite>
@@ -19,10 +23,7 @@ class FavoriteListAdapter(
 
     override fun onBindViewHolder(holder: FavoriteHolder, position: Int) {
         val favorite = favorites[position]
-        holder.apply {
-            binding.favoriteTitle.text = favorite.title
-            binding.favoriteDate.text = favorite.date.toString()
-        }
+        holder.bind(favorite)
     }
 
     override fun getItemCount() = favorites.size
