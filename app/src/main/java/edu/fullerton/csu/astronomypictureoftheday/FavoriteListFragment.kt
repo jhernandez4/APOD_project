@@ -34,6 +34,11 @@ class FavoriteListFragment : Fragment() {
         _binding = FragmentFavoriteListBinding.inflate(inflater, container, false)
 
         binding.favoriteRecyclerView.layoutManager = LinearLayoutManager(context)
+
+        val favorites = favoriteListViewModel.favorites
+        val adapter = FavoriteListAdapter(favorites)
+        binding.favoriteRecyclerView.adapter = adapter
+
         return binding.root
     }
 
