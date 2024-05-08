@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.jetbrainsKotlinAndroid)
+    id("androidx.navigation.safeargs.kotlin") version "2.5.0" apply false
 }
 
 android {
@@ -34,9 +35,6 @@ android {
         jvmTarget = "1.8"
     }
     buildFeatures{
-        viewBinding = true
-    }
-    buildFeatures {
         viewBinding = true
     }
 }
