@@ -66,9 +66,11 @@
         android:layout_height="214dp"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
+        android:scrollbars="vertical"
         android:text="TextView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
 
     <Button
         android:id="@+id/buttonCurrent"
