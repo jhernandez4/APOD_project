@@ -16,6 +16,7 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import android.net.Uri
+import androidx.fragment.app.setFragmentResultListener
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
@@ -65,6 +66,14 @@ class APOD_fragment : Fragment() {
                 binding.btnPrev.isEnabled = !dateViewModel.isFirstDate()
             }
         }
+        
+        setFragmentResultListener(CalendarDatePicker.REQUEST_KEY_DATE){ _, bundle ->
+            val newDate = bundle.getSerializable(CalendarDatePicker.BUNDLE_KEY_DATE) as Calendar
+            Log.d(TAG, "Date picked is ${newDate.time}")
+            dateViewModel.setDate(newDate.get(Calendar.YEAR), newDate.get(Calendar.MONTH), newDate.get(Calendar.DAY_OF_MONTH))
+            binding.btnNext.isEnabled = !dateViewModel.isCurrentDate()
+            binding.btnPrev.isEnabled = !dateViewModel.isFirstDate()
+        }
 
         binding.apply {
             btnPrev.setOnClickListener {
@@ -81,7 +90,7 @@ class APOD_fragment : Fragment() {
             }
 
             btnDatePicker.setOnClickListener {
-                findNavController().navigate(R.id.select_date)
+                findNavController().navigate(APOD_fragmentDirections.selectDate(dateViewModel.currentDate))
 //                val year = 1995
 //                val month = 6
 //                val day = 16
