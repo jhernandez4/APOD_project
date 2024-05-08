@@ -11,11 +11,11 @@
         android:id="@+id/tvTitle"
         android:layout_width="275dp"
         android:layout_height="42dp"
+        android:layout_marginStart="24dp"
         android:layout_marginTop="16dp"
         android:gravity="center"
         android:text="Title"
         android:textSize="30sp"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -23,12 +23,12 @@
         android:id="@+id/btnDatePicker"
         android:layout_width="223dp"
         android:layout_height="53dp"
-        android:layout_marginBottom="8dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="80dp"
         android:text="@string/selectDate"
         android:textSize="24sp"
-        app:layout_constraintBottom_toTopOf="@+id/button"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/tvDesc" />
 
     <Button
         android:id="@+id/btnPrev"
@@ -68,10 +68,10 @@
         android:layout_marginEnd="16dp"
         android:text="TextView"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvTitle" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <Button
-        android:id="@+id/btnCurrent"
+        android:id="@+id/button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="4dp"
