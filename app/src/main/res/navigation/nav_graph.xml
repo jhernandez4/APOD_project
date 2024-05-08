@@ -17,5 +17,9 @@
     <dialog
         android:id="@+id/calendarDatePicker"
         android:name="edu.fullerton.csu.astronomypictureoftheday.CalendarDatePicker"
-        android:label="CalendarDatePicker" />
+        android:label="CalendarDatePicker" >
+        <argument
+            android:name="currentDate"
+            app:argType="java.util.Calendar" />
+    </dialog>
 </navigation>
