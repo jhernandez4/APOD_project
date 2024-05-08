@@ -126,8 +126,9 @@ class APOD_ViewModel(private val savedStateHandle: SavedStateHandle) : ViewModel
 
     fun setDate(Year: Int, Month: Int, Day: Int){
         currentDateCalendar.set(Calendar.YEAR, Year)
-        currentDateCalendar.set(Calendar.MONTH, Month - 1)
+        currentDateCalendar.set(Calendar.MONTH, Month)
         currentDateCalendar.set(Calendar.DAY_OF_MONTH, Day)
+        Log.d(TAG, "Date set to: ${currentDate.time}")
         fetchPicture()  // Fetch new picture data after the date is updated
     }
 
