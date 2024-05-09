@@ -5,12 +5,13 @@ import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
 import edu.fullerton.csu.astronomypictureoftheday.Favorite
+import kotlinx.coroutines.flow.Flow
 import java.util.Calendar
 
 @Dao
 interface FavoriteDao {
     @Query("SELECT * FROM favorite")
-    suspend fun getFavorites(): List<Favorite>
+    fun getFavorites(): Flow<List<Favorite>>
 
     // date is  in MM/DD/YYYY -> month range is from 1-12
     // function returns 1 if exists, 0 if otherwise
