@@ -1,4 +1,10 @@
 package edu.fullerton.csu.astronomypictureoftheday
 
-class FavoriteIntentApplication {
+import android.app.Application
+
+class FavoriteIntentApplication : Application() {
+    override fun onCreate() {
+        super.onCreate()
+        FavoriteRepository.initialize(this)
+    }
 }
