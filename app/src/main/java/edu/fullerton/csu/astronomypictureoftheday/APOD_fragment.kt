@@ -13,11 +13,20 @@ import android.webkit.WebChromeClient
 import android.webkit.WebView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModel
+import edu.fullerton.csu.astronomypictureoftheday.databinding.FragmentApodBinding
+import java.util.Calendar
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import android.net.Uri
+import androidx.fragment.app.setFragmentResultListener
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
-import edu.fullerton.csu.astronomypictureoftheday.databinding.FragmentApodBinding
 import kotlinx.coroutines.launch
 import java.util.Properties
 import java.util.regex.Pattern
@@ -28,6 +37,7 @@ class APOD_fragment : Fragment() {
 
     private val dateViewModel: APOD_ViewModel by viewModels()
     private var _binding: FragmentApodBinding? = null
+
     private val binding get() = _binding!!
 
     override fun onCreateView(
@@ -81,7 +91,15 @@ class APOD_fragment : Fragment() {
                 val apiKey = loadApiKey(requireContext())
                 dateViewModel.setApiKeyFromContext(requireContext())
                 observePicture()
+                updateUI()
             }
+        }
+
+        setFragmentResultListener(CalendarDatePicker.REQUEST_KEY_DATE){ _, bundle ->
+            val newDate = bundle.getSerializable(CalendarDatePicker.BUNDLE_KEY_DATE) as Calendar
+            Log.d(TAG, "Date picked is ${newDate.time}")
+            dateViewModel.setDate(newDate.get(Calendar.YEAR), newDate.get(Calendar.MONTH), newDate.get(Calendar.DAY_OF_MONTH))
+            updateUI()
         }
 
         dateViewModel.eventPlayVideo.observe(viewLifecycleOwner, { videoId ->
@@ -104,22 +122,35 @@ class APOD_fragment : Fragment() {
             btnPrev.setOnClickListener {
                 dateViewModel.decrementDate()
                 updateButtonStates()
+                updateUI()
             }
 
             btnNext.setOnClickListener {
                 dateViewModel.incrementDate()
                 updateButtonStates()
+                updateUI()
+                // update picture and description,author,etc from NASA
+            }
+
+            // This button requires safe call operator
+            btnCurrent?.setOnClickListener{
+                dateViewModel.setCurrentDate()
+                updateUI()
             }
 
             btnDatePicker.setOnClickListener {
-                val year = 2023
-                val month = 11
-                val day = 14
+                findNavController().navigate(
+                    APOD_fragmentDirections.selectDate(dateViewModel.currentDate)
+                )
+            }
 
-                dateViewModel.setDate(year, month, day)
+            // Observe changes in the selected date
+            setFragmentResultListener(CalendarDatePicker.REQUEST_KEY_DATE) { _, bundle ->
+                val newDate = bundle.getSerializable(CalendarDatePicker.BUNDLE_KEY_DATE) as Calendar
+                Log.d(TAG, "Date picked is ${newDate.time}")
+                dateViewModel.setDate(newDate.get(Calendar.YEAR), newDate.get(Calendar.MONTH), newDate.get(Calendar.DAY_OF_MONTH))
                 updateButtonStates()
-                Log.d(TAG, "Date set by user: ${dateViewModel.currentDate.time}")
-                dateViewModel.fetchPicture()
+                dateViewModel.fetchPicture() // Call fetchPicture() when the date changes
             }
         }
     }
@@ -162,6 +193,7 @@ class APOD_fragment : Fragment() {
             }
         }
     }
+
 
     private fun extractVideoId(videoUrl: String): String? {
         val embedPattern = Pattern.compile("^https:\\/\\/www\\.youtube\\.com\\/embed\\/([^#&?]*).*")
@@ -224,5 +256,15 @@ class APOD_fragment : Fragment() {
         binding.webView?.destroy()
         super.onDestroyView()
         _binding = null
+    }
+
+    private fun updateUI() {
+        binding.apply {
+            btnNext.isEnabled = !dateViewModel.isCurrentDate()
+            btnPrev.isEnabled = !dateViewModel.isFirstDate()
+            btnDatePicker.apply {
+                text = dateViewModel.getCurrentDateFormatted()
+            }
+        }
     }
 }
