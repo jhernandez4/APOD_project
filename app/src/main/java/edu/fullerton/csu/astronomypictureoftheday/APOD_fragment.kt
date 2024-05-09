@@ -16,6 +16,7 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import android.net.Uri
+import android.text.method.ScrollingMovementMethod
 import androidx.fragment.app.setFragmentResultListener
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -94,6 +95,7 @@ class APOD_fragment : Fragment() {
             btnDatePicker.setOnClickListener {
                 findNavController().navigate(APOD_fragmentDirections.selectDate(dateViewModel.currentDate))
             }
+            tvDesc.movementMethod = ScrollingMovementMethod()
         }
     }
 
