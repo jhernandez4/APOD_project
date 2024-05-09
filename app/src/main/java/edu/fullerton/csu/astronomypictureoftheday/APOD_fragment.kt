@@ -28,19 +28,17 @@ import java.util.GregorianCalendar
 import java.util.Properties
 
 private const val TAG = "APOD_fragment"
-private var _binding: FragmentApodBinding? = null
-private val binding get() = _binding!!
 
 class APOD_fragment : Fragment() {
 
     private val dateViewModel: APOD_ViewModel by viewModels()
 
     // create binding for xml file -> binding class made automatically by enabling ViewBinding
-    private lateinit var binding: FragmentApodBinding
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
+    private var _binding: FragmentApodBinding? = null
+    private val binding
+        get() = checkNotNull(_binding){
+            "Cannot access binding because it is null. Is the view visible?"
+        }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -49,7 +47,7 @@ class APOD_fragment : Fragment() {
     ): View? {
         // ignore default boilerplate below
         // return super.onCreateView(inflater, container, savedInstanceState)
-        binding = FragmentApodBinding.inflate(layoutInflater, container, false)
+        _binding = FragmentApodBinding.inflate(layoutInflater, container, false)
         return binding.root
     }
 
