@@ -8,6 +8,7 @@ import java.util.GregorianCalendar
 import java.util.UUID
 
 class FavoriteListViewModel : ViewModel() {
+    private val favoriteRepository = FavoriteRepository.get()
     val favorites = mutableListOf<Favorite>()
 
     init {
@@ -16,19 +17,7 @@ class FavoriteListViewModel : ViewModel() {
         }
     }
 
-    fun loadFavorites() : List<Favorite> {
-        val result = mutableListOf<Favorite>()
-
-        for (i in 1 until 31) {
-            val favorite = Favorite(
-                id = UUID.randomUUID(),
-                title = "Favorite Picture #$i",
-                date = GregorianCalendar(2024, 3, i)
-            )
-
-            result += favorite
-        }
-
-        return result
+    suspend fun loadFavorites() : List<Favorite> {
+        return favoriteRepository.getFavorites()
     }
 }
