@@ -1,4 +1,12 @@
 package edu.fullerton.csu.astronomypictureoftheday.database
 
-class FavoriteDatabase {
+import androidx.room.Database
+import androidx.room.RoomDatabase
+import androidx.room.TypeConverters
+import edu.fullerton.csu.astronomypictureoftheday.Favorite
+
+@Database(entities = [Favorite::class], version=1)
+@TypeConverters(FavoriteTypeConverters::class)
+abstract class FavoriteDatabase : RoomDatabase() {
+    abstract fun favoriteDao(): FavoriteDao
 }
