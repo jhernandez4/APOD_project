@@ -57,26 +57,28 @@
 
     <ImageView
         android:id="@+id/ivImage"
-        android:layout_width="319dp"
+        android:layout_width="315dp"
         android:layout_height="224dp"
         android:layout_marginTop="28dp"
+        app:layout_constraintBottom_toTopOf="@+id/btnDatePicker"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.495"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tvTitle"
-        app:layout_constraintBottom_toTopOf="@+id/btnDatePicker"
         app:srcCompat="@android:drawable/alert_light_frame" />
 
     <WebView
         android:id="@+id/webView"
-        android:layout_width="319dp"
-        android:layout_height="224dp"
-        android:layout_marginTop="28dp"
-        android:visibility="gone"
-        app:layout_constraintEnd_toEndOf="@+id/ivImage"
-        app:layout_constraintStart_toStartOf="@+id/ivImage"
-        app:layout_constraintTop_toTopOf="@+id/ivImage"
-        app:layout_constraintBottom_toBottomOf="@+id/ivImage"/>
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="20dp"
+        android:visibility="visible"
+        app:layout_constraintTop_toBottomOf="@+id/tvTitle"
+        app:layout_constraintBottom_toTopOf="@+id/btnDatePicker"
+        app:layout_constraintDimensionRatio="16:9"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
 
 
