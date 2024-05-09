@@ -23,7 +23,9 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.util.GregorianCalendar
 import java.util.Properties
 
@@ -62,6 +64,18 @@ class APOD_fragment : Fragment() {
                 // Call the fetchPicture method with context
                 observePicture()
                 updateUI()
+                updateStar()
+                binding.btnFavorite.setOnClickListener {
+                    viewLifecycleOwner.lifecycleScope.launch {
+                        if (dateViewModel.getFavoriteCount() == 1) {
+                            dateViewModel.deleteFavorite(dateViewModel.getCurrentDateFormatted())
+                        } else {
+                            dateViewModel.addFavorite(binding.tvTitle.text.toString())
+                        }
+                        // Update star UI
+                        updateStar()
+                    }
+                }
             }
         }
         
@@ -73,6 +87,10 @@ class APOD_fragment : Fragment() {
         }
 
         binding.apply {
+            btnList.setOnClickListener{
+                findNavController().navigate(R.id.show_favorites)
+            }
+
             btnPrev.setOnClickListener {
                 dateViewModel.decrementDate()
                 updateUI()
@@ -131,6 +149,22 @@ class APOD_fragment : Fragment() {
             btnPrev.isEnabled = !dateViewModel.isFirstDate()
             btnDatePicker.apply {
                 text = dateViewModel.getCurrentDateFormatted()
+            }
+        }
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            updateStar()
+        }
+    }
+
+    private suspend fun updateStar(){
+        withContext(Dispatchers.IO) {
+            val favoriteCount = dateViewModel.getFavoriteCount()
+            // Now update the UI on the main thread
+            withContext(Dispatchers.Main) {
+                binding.btnFavorite.setImageResource(
+                    if (favoriteCount == 1) R.drawable.full_star else R.drawable.empty_star
+                )
             }
         }
     }
