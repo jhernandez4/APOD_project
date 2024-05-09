@@ -53,12 +53,13 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
-    <ImageView
+    <ImageButton
         android:id="@+id/ivImage"
         android:layout_width="854dp"
         android:layout_height="534dp"
         android:layout_marginTop="28dp"
         app:layout_constraintEnd_toEndOf="parent"
+        android:contentDescription="@string/description_image_1"
         app:layout_constraintHorizontal_bias="0.495"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tvTitle"
@@ -86,5 +87,15 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/btnNext"
         app:layout_constraintStart_toEndOf="@+id/btnPrev" />
+
+    <ImageView
+        android:id="@+id/expanded_image"
+        android:layout_width="953dp"
+        android:layout_height="1714dp"
+        android:contentDescription="@string/description_zoom_touch_close"
+        android:visibility="invisible"
+        app:srcCompat="@android:drawable/alert_light_frame"
+        tools:layout_editor_absoluteX="-1dp"
+        tools:layout_editor_absoluteY="1dp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
