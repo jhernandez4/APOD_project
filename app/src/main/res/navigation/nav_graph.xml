@@ -13,6 +13,9 @@
         <action
             android:id="@+id/select_date"
             app:destination="@id/calendarDatePicker" />
+        <action
+            android:id="@+id/show_favorites"
+            app:destination="@id/favoriteListFragment" />
     </fragment>
     <dialog
         android:id="@+id/calendarDatePicker"
