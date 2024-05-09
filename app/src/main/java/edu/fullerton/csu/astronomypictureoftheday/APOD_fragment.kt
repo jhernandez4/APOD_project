@@ -29,26 +29,32 @@ import retrofit2.Callback
 import retrofit2.Response
 import android.net.Uri
 import android.widget.ImageView
+import android.text.method.ScrollingMovementMethod
 import androidx.fragment.app.setFragmentResultListener
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.util.GregorianCalendar
 import java.util.Properties
 
 private const val TAG = "APOD_fragment"
-private var _binding: FragmentApodBinding? = null
-private val binding get() = _binding!!
 
 class APOD_fragment : Fragment() {
 
     private val dateViewModel: APOD_ViewModel by viewModels()
 
+    private var _binding: FragmentApodBinding? = null
+    private val binding
+        get() = checkNotNull(_binding){
+            "Cannot access binding because it is null. Is the view visible?"
+        }
+
     // create binding for xml file -> binding class made automatically by enabling ViewBinding
-    private lateinit var binding: FragmentApodBinding
 
     private var currentAnimator: Animator? = null
     private var shortAnimationDuration: Int = 0
@@ -67,8 +73,7 @@ class APOD_fragment : Fragment() {
     ): View? {
         // ignore default boilerplate below
         // return super.onCreateView(inflater, container, savedInstanceState)
-        binding = FragmentApodBinding.inflate(layoutInflater, container, false)
-
+        _binding = FragmentApodBinding.inflate(layoutInflater, container, false)
         return binding.root
     }
 
@@ -83,6 +88,18 @@ class APOD_fragment : Fragment() {
                 // Call the fetchPicture method with context
                 observePicture()
                 updateUI()
+                updateStar()
+                binding.btnFavorite.setOnClickListener {
+                    viewLifecycleOwner.lifecycleScope.launch {
+                        if (dateViewModel.getFavoriteCount() == 1) {
+                            dateViewModel.deleteFavorite(dateViewModel.getCurrentDateFormatted())
+                        } else {
+                            dateViewModel.addFavorite(binding.tvTitle.text.toString())
+                        }
+                        // Update star UI
+                        updateStar()
+                    }
+                }
             }
         }
         
@@ -104,6 +121,10 @@ class APOD_fragment : Fragment() {
         }
 
         binding.apply {
+            btnList.setOnClickListener{
+                findNavController().navigate(R.id.show_favorites)
+            }
+
             btnPrev.setOnClickListener {
                 dateViewModel.decrementDate()
                 updateUI()
@@ -124,6 +145,7 @@ class APOD_fragment : Fragment() {
             btnDatePicker.setOnClickListener {
                 findNavController().navigate(APOD_fragmentDirections.selectDate(dateViewModel.currentDate))
             }
+            tvDesc.movementMethod = ScrollingMovementMethod()
         }
     }
 
@@ -269,6 +291,22 @@ class APOD_fragment : Fragment() {
             btnPrev.isEnabled = !dateViewModel.isFirstDate()
             btnDatePicker.apply {
                 text = dateViewModel.getCurrentDateFormatted()
+            }
+        }
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            updateStar()
+        }
+    }
+
+    private suspend fun updateStar(){
+        withContext(Dispatchers.IO) {
+            val favoriteCount = dateViewModel.getFavoriteCount()
+            // Now update the UI on the main thread
+            withContext(Dispatchers.Main) {
+                binding.btnFavorite.setImageResource(
+                    if (favoriteCount == 1) R.drawable.full_star else R.drawable.empty_star
+                )
             }
         }
     }
