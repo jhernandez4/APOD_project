@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/APOD_fragment">
+    app:startDestination="@id/favoriteListFragment">
 
     <fragment
         android:id="@+id/APOD_fragment"
@@ -22,4 +22,9 @@
             android:name="currentDate"
             app:argType="java.util.Calendar" />
     </dialog>
+    <fragment
+        android:id="@+id/favoriteListFragment"
+        android:name="edu.fullerton.csu.astronomypictureoftheday.FavoriteListFragment"
+        android:label="FavoriteListFragment"
+        tools:layout="@layout/fragment_favorite_list"/>
 </navigation>
