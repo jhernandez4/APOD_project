@@ -250,6 +250,11 @@ class APOD_fragment : Fragment() {
                     .placeholder(R.drawable.placeholder_background)
                     .error(R.drawable.error_image_background)
                     .into(binding.ivImage)
+                Glide.with(this)
+                    .load(it.url)
+                    .placeholder(R.drawable.placeholder_background)
+                    .error(R.drawable.error_image_background)
+                    .into(binding.expandedImage)
 
                 binding.tvDesc.text = it.explanation
                 binding.tvTitle.text = it.title
