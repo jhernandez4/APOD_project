@@ -8,8 +8,12 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import edu.fullerton.csu.astronomypictureoftheday.databinding.FragmentFavoriteListBinding
+import kotlinx.coroutines.launch
 
 private const val TAG = "FavoriteListFragment"
 class FavoriteListFragment : Fragment() {
@@ -35,11 +39,19 @@ class FavoriteListFragment : Fragment() {
 
         binding.favoriteRecyclerView.layoutManager = LinearLayoutManager(context)
 
-        val favorites = favoriteListViewModel.favorites
-        val adapter = FavoriteListAdapter(favorites)
-        binding.favoriteRecyclerView.adapter = adapter
-
         return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED){
+                    val favorites = favoriteListViewModel.loadFavorites()
+                    binding.favoriteRecyclerView.adapter = FavoriteListAdapter(favorites)
+
+            }
+        }
     }
 
     override fun onDestroyView() {
