@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:drawable="@drawable/full_star" />
+
+<!--    Disable focused and hovered. Should only be full when date exists in db-->
+<!--    <item android:state_focused="true"-->
+<!--        android:drawable="@drawable/baseline_star_24" />-->
+<!--    <item android:state_hovered="true"-->
+<!--        android:drawable="@drawable/baseline_star_24" />-->
+    <item android:drawable="@drawable/empty_star" />
+</selector>

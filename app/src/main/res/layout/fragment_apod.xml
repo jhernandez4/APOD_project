@@ -7,95 +7,114 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <ImageView
-        android:id="@+id/expanded_image"
-        android:layout_width="413dp"
-        android:layout_height="732dp"
-        android:visibility="invisible"
-        android:contentDescription="@string/description_zoom_touch_close"
-        app:srcCompat="@android:drawable/alert_light_frame"
-        tools:layout_editor_absoluteX="-1dp"
-        tools:layout_editor_absoluteY="1dp" />
+    <ImageButton
+        android:id="@+id/btnFavorite"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_marginEnd="10dp"
+        android:background="#00ffffff"
+        android:contentDescription="Favorite Button"
+        android:scaleX="2"
+        android:scaleY="2"
+        android:src="@drawable/empty_star"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/tvTitle" />
+
+    <ImageButton
+        android:id="@+id/btnList"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_marginStart="10dp"
+        android:background="#00ffffff"
+        android:contentDescription="List Button"
+        android:src="@drawable/baseline_format_list_bulleted_24"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/tvTitle" />
 
     <TextView
         android:id="@+id/tvTitle"
-        android:layout_width="275dp"
-        android:layout_height="42dp"
-        android:layout_marginTop="16dp"
+        android:layout_width="280dp"
+        android:layout_height="50dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="12dp"
+        android:layout_marginEnd="10dp"
         android:gravity="center"
         android:text="Title"
-        android:textSize="30sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toStartOf="@+id/btnFavorite"
+        app:layout_constraintStart_toEndOf="@+id/btnList"
         app:layout_constraintTop_toTopOf="parent" />
 
     <Button
         android:id="@+id/btnDatePicker"
         android:layout_width="223dp"
         android:layout_height="53dp"
-        android:layout_marginTop="28dp"
+        android:layout_marginTop="10dp"
         android:text="Select Date"
         android:textSize="24sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/ivImage"
+        app:layout_constraintStart_toStartOf="@+id/ivImage"
         app:layout_constraintTop_toBottomOf="@+id/ivImage" />
 
     <Button
         android:id="@+id/btnPrev"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="28dp"
-        android:layout_marginBottom="16dp"
+        android:layout_marginStart="12dp"
+        android:layout_marginBottom="10dp"
         android:text="@string/prev"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvDesc"
-        app:layout_constraintVertical_bias="0.718" />
+        app:layout_constraintTop_toTopOf="@+id/btnCurrent" />
 
     <Button
         android:id="@+id/btnNext"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="24dp"
-        android:layout_marginBottom="16dp"
+        android:layout_marginEnd="12dp"
+        android:layout_marginBottom="10dp"
         android:text="@string/next"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvDesc"
-        app:layout_constraintVertical_bias="0.718" />
+        app:layout_constraintTop_toTopOf="@+id/btnCurrent" />
 
-    <ImageButton
+    <ImageView
         android:id="@+id/ivImage"
         android:layout_width="319dp"
         android:layout_height="224dp"
-        android:layout_marginTop="28dp"
-        android:contentDescription="@string/description_image_1"
+        android:layout_marginTop="12dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.495"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tvTitle"
         app:srcCompat="@android:drawable/alert_light_frame" />
 
     <TextView
         android:id="@+id/tvDesc"
-        android:layout_width="387dp"
-        android:layout_height="233dp"
-        android:layout_marginTop="32dp"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginBottom="20dp"
+        android:scrollbars="vertical"
         android:text="TextView"
+        android:textSize="15sp"
+        app:layout_constraintBottom_toTopOf="@+id/btnCurrent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.52"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btnDatePicker" />
+        app:layout_constraintTop_toBottomOf="@+id/btnDatePicker"
+        app:layout_constraintVertical_bias="0.0" />
 
     <Button
         android:id="@+id/btnCurrent"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
+        android:layout_marginBottom="10dp"
         android:text="@string/current"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/btnNext"
-        app:layout_constraintStart_toEndOf="@+id/btnPrev"
-        app:layout_constraintTop_toBottomOf="@+id/tvDesc"
-        app:layout_constraintVertical_bias="0.71000004" />
+        app:layout_constraintHorizontal_bias="0.496"
+        app:layout_constraintStart_toEndOf="@+id/btnPrev" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

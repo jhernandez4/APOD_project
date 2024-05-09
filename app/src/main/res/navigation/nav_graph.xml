@@ -13,6 +13,9 @@
         <action
             android:id="@+id/select_date"
             app:destination="@id/calendarDatePicker" />
+        <action
+            android:id="@+id/show_favorites"
+            app:destination="@id/favoriteListFragment" />
     </fragment>
     <dialog
         android:id="@+id/calendarDatePicker"
@@ -22,4 +25,9 @@
             android:name="currentDate"
             app:argType="java.util.Calendar" />
     </dialog>
+    <fragment
+        android:id="@+id/favoriteListFragment"
+        android:name="edu.fullerton.csu.astronomypictureoftheday.FavoriteListFragment"
+        android:label="FavoriteListFragment"
+        tools:layout="@layout/fragment_favorite_list"/>
 </navigation>

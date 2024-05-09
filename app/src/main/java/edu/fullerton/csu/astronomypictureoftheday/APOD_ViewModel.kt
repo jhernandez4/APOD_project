@@ -15,11 +15,14 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import java.util.Properties
+import java.util.UUID
 
 private const val TAG = "APOD_ViewModel"
 const val CURRENT_INDEX_KEY = "CURRENT_INDEX_KEY"
 const val BASE_URL = "https://api.nasa.gov/"
 class APOD_ViewModel(private val savedStateHandle: SavedStateHandle) : ViewModel() {
+    private val favoriteRepository = FavoriteRepository.get()
+
     private var apiKey: String? = null
 
     init {
@@ -160,5 +163,18 @@ class APOD_ViewModel(private val savedStateHandle: SavedStateHandle) : ViewModel
         return currentDate.get(Calendar.YEAR) == 1995 &&
                 currentDate.get(Calendar.MONTH) == 5 &&
                 currentDate.get(Calendar.DAY_OF_MONTH) == 16
+    }
+
+    suspend fun getFavoriteCount(): Int {
+        return favoriteRepository.getFavoriteCount(getCurrentDateFormatted())
+    }
+
+    suspend fun addFavorite(title: String){
+        val favorite = Favorite(UUID.randomUUID(), title, currentDate)
+        favoriteRepository.addFavorite(favorite)
+    }
+
+    suspend fun deleteFavorite(date: String){
+        favoriteRepository.deleteFavorite(getCurrentDateFormatted())
     }
 }
