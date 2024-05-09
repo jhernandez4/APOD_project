@@ -1,6 +1,8 @@
 package edu.fullerton.csu.astronomypictureoftheday
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.launch
 import java.util.Date
 import java.util.GregorianCalendar
 import java.util.UUID
@@ -9,6 +11,14 @@ class FavoriteListViewModel : ViewModel() {
     val favorites = mutableListOf<Favorite>()
 
     init {
+        viewModelScope.launch {
+            favorites += loadFavorites()
+        }
+    }
+
+    fun loadFavorites() : List<Favorite> {
+        val result = mutableListOf<Favorite>()
+
         for (i in 1 until 31) {
             val favorite = Favorite(
                 id = UUID.randomUUID(),
@@ -16,7 +26,9 @@ class FavoriteListViewModel : ViewModel() {
                 date = GregorianCalendar(2024, 3, i)
             )
 
-            favorites += favorite
+            result += favorite
         }
+
+        return result
     }
 }
