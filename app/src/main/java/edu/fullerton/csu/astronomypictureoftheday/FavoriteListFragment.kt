@@ -25,11 +25,6 @@ class FavoriteListFragment : Fragment() {
         }
     private val favoriteListViewModel: FavoriteListViewModel by viewModels()
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        Log.d(TAG, "Total crimes: ${favoriteListViewModel.favorites.size}")
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -47,8 +42,9 @@ class FavoriteListFragment : Fragment() {
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED){
-                    val favorites = favoriteListViewModel.loadFavorites()
-                    binding.favoriteRecyclerView.adapter = FavoriteListAdapter(favorites)
+                    favoriteListViewModel.favorites.collect{favorites ->
+                        binding.favoriteRecyclerView.adapter = FavoriteListAdapter(favorites)
+                    }
 
             }
         }
