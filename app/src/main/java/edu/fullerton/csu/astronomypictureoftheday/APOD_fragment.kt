@@ -197,6 +197,7 @@ class APOD_fragment : Fragment() {
 
     private fun animateZoomToLargeImage(startBounds: RectF, finalBounds: RectF, startScale: Float) {
         binding.expandedImage.visibility = View.VISIBLE
+        binding.tvDesc.visibility = View.INVISIBLE
 
         // Set the pivot point for SCALE_X and SCALE_Y transformations to the
         // top-left corner of the zoomed-in view. The default is the center of
@@ -298,12 +299,14 @@ class APOD_fragment : Fragment() {
                     override fun onAnimationEnd(animation: Animator) {
                         thumbView.alpha = 1f
                         binding.expandedImage.visibility = View.GONE
+                        binding.tvDesc.visibility = View.VISIBLE
                         currentAnimator = null
                     }
 
                     override fun onAnimationCancel(animation: Animator) {
                         thumbView.alpha = 1f
                         binding.expandedImage.visibility = View.GONE
+                        binding.tvDesc.visibility = View.VISIBLE
                         currentAnimator = null
                     }
                 })
