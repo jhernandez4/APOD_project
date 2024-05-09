@@ -7,6 +7,16 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
+    <ImageView
+        android:id="@+id/expanded_image"
+        android:layout_width="413dp"
+        android:layout_height="732dp"
+        android:visibility="invisible"
+        android:contentDescription="@string/description_zoom_touch_close"
+        app:srcCompat="@android:drawable/alert_light_frame"
+        tools:layout_editor_absoluteX="-1dp"
+        tools:layout_editor_absoluteY="1dp" />
+
     <TextView
         android:id="@+id/tvTitle"
         android:layout_width="275dp"
@@ -54,11 +64,12 @@
         app:layout_constraintTop_toBottomOf="@+id/tvDesc"
         app:layout_constraintVertical_bias="0.718" />
 
-    <ImageView
+    <ImageButton
         android:id="@+id/ivImage"
         android:layout_width="319dp"
         android:layout_height="224dp"
         android:layout_marginTop="28dp"
+        android:contentDescription="@string/description_image_1"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.495"
         app:layout_constraintStart_toStartOf="parent"
