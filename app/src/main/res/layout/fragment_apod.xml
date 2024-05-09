@@ -11,25 +11,39 @@
         android:id="@+id/btnFavorite"
         android:layout_width="48dp"
         android:layout_height="48dp"
+        android:layout_marginEnd="10dp"
         android:background="#00ffffff"
         android:contentDescription="Favorite Button"
         android:scaleX="2"
         android:scaleY="2"
         android:src="@drawable/star_selector"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/tvTitle"
+        app:layout_constraintTop_toTopOf="@+id/tvTitle" />
+
+    <ImageButton
+        android:id="@+id/btnList"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_marginStart="10dp"
+        android:background="#00ffffff"
+        android:contentDescription="List Button"
+        android:src="@drawable/baseline_format_list_bulleted_24"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/tvTitle" />
 
     <TextView
         android:id="@+id/tvTitle"
-        android:layout_width="316dp"
-        android:layout_height="46dp"
+        android:layout_width="280dp"
+        android:layout_height="50dp"
+        android:layout_marginStart="10dp"
         android:layout_marginTop="12dp"
+        android:layout_marginEnd="10dp"
         android:gravity="center"
         android:text="Title"
         android:textSize="20sp"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:layout_editor_absoluteX="12dp" />
+        app:layout_constraintEnd_toStartOf="@+id/btnFavorite"
+        app:layout_constraintStart_toEndOf="@+id/btnList"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <Button
         android:id="@+id/btnDatePicker"
@@ -84,6 +98,7 @@
         android:layout_marginBottom="20dp"
         android:scrollbars="vertical"
         android:text="TextView"
+        android:textSize="15sp"
         app:layout_constraintBottom_toTopOf="@+id/btnCurrent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.52"

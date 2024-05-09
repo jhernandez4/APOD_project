@@ -9,28 +9,45 @@
 
     <TextView
         android:id="@+id/tvTitle"
-        android:layout_width="504dp"
-        android:layout_height="102dp"
+        android:layout_width="0dp"
+        android:layout_height="100dp"
+        android:layout_marginStart="24dp"
         android:layout_marginTop="16dp"
+        android:layout_marginEnd="24dp"
         android:gravity="center"
+        android:scrollbars="vertical"
         android:text="Title"
         android:textSize="40sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:scrollbars="vertical"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/btnFavorite"
+        app:layout_constraintStart_toEndOf="@+id/btnList"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageButton
+        android:id="@+id/btnList"
+        android:layout_width="96dp"
+        android:layout_height="96dp"
+        android:layout_marginStart="20dp"
+        android:background="#00ffffff"
+        android:contentDescription="List Button"
+        android:scaleX="2"
+        android:scaleY="2"
+        android:src="@drawable/baseline_format_list_bulleted_24"
+        app:layout_constraintBottom_toBottomOf="@+id/tvTitle"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/tvTitle" />
 
     <ImageButton
         android:id="@+id/btnFavorite"
         android:layout_width="96dp"
         android:layout_height="96dp"
-        android:layout_marginStart="24dp"
+        android:layout_marginEnd="20dp"
         android:background="#00ffffff"
         android:contentDescription="Favorite Button"
         android:scaleX="4"
         android:scaleY="4"
         android:src="@drawable/star_selector"
-        app:layout_constraintStart_toEndOf="@+id/tvTitle"
+        app:layout_constraintBottom_toBottomOf="@+id/tvTitle"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/tvTitle" />
 
     <Button
