@@ -16,7 +16,7 @@
         android:contentDescription="Favorite Button"
         android:scaleX="2"
         android:scaleY="2"
-        android:src="@drawable/star_selector"
+        android:src="@drawable/empty_star"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/tvTitle" />
 
