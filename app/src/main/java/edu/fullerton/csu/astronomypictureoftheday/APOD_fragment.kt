@@ -16,7 +16,12 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import android.net.Uri
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import com.bumptech.glide.Glide
+import kotlinx.coroutines.launch
+import java.util.GregorianCalendar
 import java.util.Properties
 
 private const val TAG = "APOD_fragment"
@@ -47,62 +52,49 @@ class APOD_fragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        // Load the API key in Fragment
-        val apiKey = loadApiKey(requireContext())
-        dateViewModel.setApiKeyFromContext(requireContext())
-        // Call the fetchPicture method with context
-        binding.btnSelectDate.setOnClickListener {
-            dateViewModel.fetchPicture()
-        }
-        observePicture()
-        // Observing the currentPicture LiveData from the ViewModel
-        dateViewModel.currentPicture.observe(viewLifecycleOwner) { astronomyPicture ->
-            // Ensure the astronomyPicture is not null
-            astronomyPicture?.let {
-                // Using Glide to load the image from URL into imageView
-                Glide.with(this@APOD_fragment) // Ensure you use the Fragment context correctly
-                    .load(it.url) // URL from the LiveData
-                    .placeholder(R.drawable.placeholder_background) // Placeholder image
-                    .error(R.drawable.error_image_background) // Error image
-                    .into(binding.imageView) // Target imageView
 
-                // Set the text of the description TextView
-                binding.descriptionText.text = it.explanation
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED){
+                // Load the API key in Fragment
+                val apiKey = loadApiKey(requireContext())
+                dateViewModel.setApiKeyFromContext(requireContext())
+                // Call the fetchPicture method with context
+                observePicture()
+                binding.btnNext.isEnabled = !dateViewModel.isCurrentDate()
+                binding.btnPrev.isEnabled = !dateViewModel.isFirstDate()
             }
         }
 
         binding.apply {
-
             btnPrev.setOnClickListener {
                 dateViewModel.decrementDate()
-                // update picture and description,author,etc from NASA according to
-                // dateViewModel.currentDate.get(Calendar.YEAR)
-                // dateViewModel.currentDate.get(Calendar.MONTH)
-                // dateViewModel.currentDate.get(Calendar.DAY_OF_MONTH)
-                // call updateAPOD()
+                btnNext.isEnabled = !dateViewModel.isCurrentDate()
+                btnPrev.isEnabled = !dateViewModel.isFirstDate()
             }
 
             btnNext.setOnClickListener {
                 dateViewModel.incrementDate()
+                btnNext.isEnabled = !dateViewModel.isCurrentDate()
+                btnPrev.isEnabled = !dateViewModel.isFirstDate()
                 // update picture and description,author,etc from NASA
             }
 
-
-
-            btnSelectDate.setOnClickListener {
+            btnDatePicker.setOnClickListener {
                 // get date from date selected by user
                 // set the date with -> dateViewModel.setDate(year, month, day)
 
                 // hard-coded values to test setDate functionality
                 // this is the first day an APOD was posted by NASA
                 // june 16, 1995
-                val year = 2023
-                val month = 5 // I think values are from 0 to 11. 5 is june
+                val year = 1995
+                val month = 6 // I think values are from 0 to 11. 5 is june
                 val day = 16
 
                 dateViewModel.setDate(year, month, day)
+                btnPrev.isEnabled = !dateViewModel.isFirstDate()
+                btnNext.isEnabled = !dateViewModel.isCurrentDate()
                 Log.d(TAG, "Date set by user: ${dateViewModel.currentDate.time}")
-                // update picture and description,author,etc from NASA with new date
+                dateViewModel.fetchPicture()
             }
         }
     }
@@ -127,17 +119,11 @@ class APOD_fragment : Fragment() {
                     .load(it.url)
                     .placeholder(R.drawable.placeholder_background)
                     .error(R.drawable.error_image_background)
-                    .into(binding.imageView)
+                    .into(binding.ivImage)
 
-                binding.descriptionText.text = it.explanation
+                binding.tvDesc.text = it.explanation
+                binding.tvTitle.text = it.title
             }
         }
-
-
-        // function signature can be changed
-        fun updateAPOD(year: Int, month: Int, day: Int) {
-            // update ImageView and Text from NASA's api using the date passed in
-        }
-
     }
 }

@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">AstronomyPictureOfTheDay</string>
+    <string name="next">Next</string>
+    <string name="prev">Prev</string>
+    <string name="current">Current</string>
+    <string name="selectDate">Select Date</string>
 </resources>
