@@ -3,6 +3,7 @@ package edu.fullerton.csu.astronomypictureoftheday
 import android.content.Context
 import androidx.room.Room
 import edu.fullerton.csu.astronomypictureoftheday.database.FavoriteDatabase
+import kotlinx.coroutines.flow.Flow
 import java.lang.IllegalStateException
 
 private const val DATABASE_NAME = "favorite-database"
@@ -15,7 +16,7 @@ class FavoriteRepository private constructor(context: Context){
             DATABASE_NAME
         ).build()
 
-    suspend fun getFavorites(): List<Favorite> = database.favoriteDao().getFavorites()
+    fun getFavorites(): Flow<List<Favorite>> = database.favoriteDao().getFavorites()
 
     suspend fun getFavoriteCount(date: String): Int = database.favoriteDao().getFavoriteCount(date)
 
