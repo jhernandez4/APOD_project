@@ -93,15 +93,15 @@ class APOD_fragment : Fragment() {
             updateUI()
         }
 
-            binding.ivImage.setOnClickListener {
-                Log.d(TAG, "TEST")
+        binding.ivImage.setOnClickListener {
+            Log.d(TAG, "TEST")
 
-                if (binding.expandedImage.visibility == View.VISIBLE) {
-                    setDismissLargeImageAnimation(binding.ivImage, RectF(), 1f)
-                } else {
-                    zoomImageFromThumb(binding.ivImage)
-                }
+            if (binding.expandedImage.visibility == View.VISIBLE) {
+                setDismissLargeImageAnimation(binding.ivImage, RectF(), 1f)
+            } else {
+                zoomImageFromThumb(binding.ivImage)
             }
+        }
 
         binding.apply {
             btnPrev.setOnClickListener {
