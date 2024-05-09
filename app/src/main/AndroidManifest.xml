@@ -13,6 +13,13 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.AstronomyPictureOfTheDay"
         tools:targetApi="31">
+
+        <!-- Meta-data tag for YouTube API key -->
+        <meta-data
+            android:name="com.google.android.youtube.API_KEY"
+            android:value="${youtube_api_key}" />
+
+
         <activity
             android:name=".MainActivity"
             android:exported="true">

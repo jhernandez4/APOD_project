@@ -54,6 +54,7 @@
         app:layout_constraintTop_toBottomOf="@+id/tvDesc"
         app:layout_constraintVertical_bias="0.718" />
 
+
     <ImageView
         android:id="@+id/ivImage"
         android:layout_width="319dp"
@@ -63,7 +64,21 @@
         app:layout_constraintHorizontal_bias="0.495"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tvTitle"
+        app:layout_constraintBottom_toTopOf="@+id/btnDatePicker"
         app:srcCompat="@android:drawable/alert_light_frame" />
+
+    <WebView
+        android:id="@+id/webView"
+        android:layout_width="319dp"
+        android:layout_height="224dp"
+        android:layout_marginTop="28dp"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="@+id/ivImage"
+        app:layout_constraintStart_toStartOf="@+id/ivImage"
+        app:layout_constraintTop_toTopOf="@+id/ivImage"
+        app:layout_constraintBottom_toBottomOf="@+id/ivImage"/>
+
+
 
     <TextView
         android:id="@+id/tvDesc"
@@ -74,6 +89,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/btnDatePicker" />
+
 
     <Button
         android:id="@+id/button"
