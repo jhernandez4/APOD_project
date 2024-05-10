@@ -7,18 +7,6 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <ImageView
-        android:id="@+id/expanded_image"
-        android:layout_width="413dp"
-        android:layout_height="732dp"
-        android:contentDescription="@string/description_zoom_touch_close"
-        android:visibility="invisible"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@android:drawable/alert_light_frame" />
-
     <ImageButton
         android:id="@+id/btnFavorite"
         android:layout_width="48dp"
@@ -146,5 +134,17 @@
         app:layout_constraintEnd_toStartOf="@+id/btnNext"
         app:layout_constraintHorizontal_bias="0.496"
         app:layout_constraintStart_toEndOf="@+id/btnPrev" />
+
+    <ImageView
+        android:id="@+id/expanded_image"
+        android:layout_width="413dp"
+        android:layout_height="732dp"
+        android:contentDescription="@string/description_zoom_touch_close"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@android:drawable/alert_light_frame" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
