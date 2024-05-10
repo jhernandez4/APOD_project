@@ -11,6 +11,7 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
 import androidx.lifecycle.MutableLiveData
+import android.os.Build
 import android.os.Bundle
 import android.os.Debug
 import android.util.Log
@@ -18,6 +19,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.DecelerateInterpolator
+import android.webkit.ConsoleMessage
+import android.webkit.CookieManager
+import android.webkit.WebChromeClient
+import android.webkit.WebView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
@@ -41,6 +46,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.util.GregorianCalendar
 import java.util.Properties
+import java.util.regex.Pattern
 
 private const val TAG = "APOD_fragment"
 
@@ -61,6 +67,9 @@ class APOD_fragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            WebView.setWebContentsDebuggingEnabled(true)
+        }
 
         shortAnimationDuration = resources.getInteger(android.R.integer.config_shortAnimTime)
     }
@@ -70,22 +79,52 @@ class APOD_fragment : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        // ignore default boilerplate below
-        // return super.onCreateView(inflater, container, savedInstanceState)
-        _binding = FragmentApodBinding.inflate(layoutInflater, container, false)
+    ): View {
+        _binding = FragmentApodBinding.inflate(inflater, container, false)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setupWebView()
+        initObservers()
+        setupUI()
+        setFragmentResultListener(CalendarDatePicker.REQUEST_KEY_DATE) { _, bundle ->
+            val newDate = bundle.getSerializable(CalendarDatePicker.BUNDLE_KEY_DATE) as Calendar
+            Log.d(TAG, "Date picked is ${newDate.time}")
+            dateViewModel.setDate(newDate.get(Calendar.YEAR), newDate.get(Calendar.MONTH), newDate.get(Calendar.DAY_OF_MONTH))
+            updateUI()
+            dateViewModel.fetchPicture() // Call fetchPicture() when the date changes
+        }
+    }
 
+    private fun setupWebView() {
+        binding.webView?.settings?.apply {
+            javaScriptEnabled = true
+            domStorageEnabled = true
+            allowContentAccess = true
+            allowFileAccess = true
+            loadWithOverviewMode = true
+            useWideViewPort = true
+        }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            CookieManager.getInstance().setAcceptThirdPartyCookies(binding.webView, true)
+        }
+
+        binding.webView?.webChromeClient = object : WebChromeClient() {
+            override fun onConsoleMessage(consoleMessage: ConsoleMessage?): Boolean {
+                Log.d(TAG, "WebView console message: ${consoleMessage?.message()}")
+                return super.onConsoleMessage(consoleMessage)
+            }
+        }
+    }
+
+    private fun initObservers() {
         viewLifecycleOwner.lifecycleScope.launch {
-            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED){
-                // Load the API key in Fragment
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 val apiKey = loadApiKey(requireContext())
                 dateViewModel.setApiKeyFromContext(requireContext())
-                // Call the fetchPicture method with context
                 observePicture()
                 updateUI()
                 updateStar()
@@ -102,25 +141,33 @@ class APOD_fragment : Fragment() {
                 }
             }
         }
-        
-        setFragmentResultListener(CalendarDatePicker.REQUEST_KEY_DATE){ _, bundle ->
-            val newDate = bundle.getSerializable(CalendarDatePicker.BUNDLE_KEY_DATE) as Calendar
-            Log.d(TAG, "Date picked is ${newDate.time}")
-            dateViewModel.setDate(newDate.get(Calendar.YEAR), newDate.get(Calendar.MONTH), newDate.get(Calendar.DAY_OF_MONTH))
-            updateUI()
-        }
-
-        binding.ivImage.setOnClickListener {
-            Log.d(TAG, "TEST")
-
-            if (binding.expandedImage.visibility == View.VISIBLE) {
-                setDismissLargeImageAnimation(binding.ivImage, RectF(), 1f)
+        dateViewModel.eventPlayVideo.observe(viewLifecycleOwner, { videoId ->
+            Log.d(TAG, "Observing video playback event")
+            if (videoId != null) {
+                val cleanVideoId = extractVideoId(videoId)
+                Log.d(TAG, "Video ID received: $cleanVideoId")
+                loadVideoInWebView(cleanVideoId ?: videoId)
+                binding.ivImage.visibility = View.GONE
+                binding.webView?.visibility = View.VISIBLE
             } else {
-                zoomImageFromThumb(binding.ivImage)
+                Log.d(TAG, "Received null Video ID, not displaying video")
+                binding.webView?.visibility = View.GONE
             }
-        }
+        })
+    }
 
+    private fun setupUI() {
         binding.apply {
+            ivImage.setOnClickListener {
+                Log.d(TAG, "TEST")
+
+                if (binding.expandedImage.visibility == View.VISIBLE) {
+                    setDismissLargeImageAnimation(binding.ivImage, RectF(), 1f)
+                } else {
+                    zoomImageFromThumb(binding.ivImage)
+                }
+            }
+
             btnList.setOnClickListener{
                 findNavController().navigate(R.id.show_favorites)
             }
@@ -143,15 +190,12 @@ class APOD_fragment : Fragment() {
             }
 
             btnDatePicker.setOnClickListener {
-                findNavController().navigate(APOD_fragmentDirections.selectDate(dateViewModel.currentDate))
+                findNavController().navigate(
+                    APOD_fragmentDirections.selectDate(dateViewModel.currentDate)
+                )
             }
             tvDesc.movementMethod = ScrollingMovementMethod()
         }
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
     }
 
     private fun zoomImageFromThumb(thumbView: ImageView) {
@@ -267,21 +311,31 @@ class APOD_fragment : Fragment() {
 
     private fun observePicture() {
         dateViewModel.currentPicture.observe(viewLifecycleOwner) { astronomyPicture ->
-            astronomyPicture?.let {
-                Glide.with(this)
-                    .load(it.url)
-                    .placeholder(R.drawable.placeholder_background)
-                    .error(R.drawable.error_image_background)
-                    .into(binding.ivImage)
-                Glide.with(this)
-                    .load(it.url)
-                    .placeholder(R.drawable.placeholder_background)
-                    .error(R.drawable.error_image_background)
-                    .into(binding.expandedImage)
+            if (astronomyPicture != null) {
+                if (astronomyPicture.media_type == "video") {
+                    val videoId = extractVideoId(astronomyPicture.url)
+                    videoId?.let {
+                        loadVideoInWebView(getEmbedUrl(it))
+                        binding.ivImage.visibility = View.GONE
+                        binding.webView?.visibility = View.VISIBLE
+                    }
+                } else {
+                    Glide.with(this@APOD_fragment)
+                        .load(astronomyPicture.url)
+                        .placeholder(R.drawable.placeholder_background)
+                        .error(R.drawable.error_image_background)
+                        .into(binding.ivImage)
+                    Glide.with(this@APOD_fragment)
+                        .load(astronomyPicture.url)
+                        .placeholder(R.drawable.placeholder_background)
+                        .error(R.drawable.error_image_background)
+                        .into(binding.expandedImage)
+                    binding.tvDesc.text = astronomyPicture.explanation
+                    binding.tvTitle.text = astronomyPicture.title
 
-                binding.tvDesc.text = it.explanation
-                binding.tvTitle.text = it.title
-
+                    binding.ivImage.visibility = View.VISIBLE
+                    binding.webView?.visibility = View.GONE
+                }
             }
         }
     }
@@ -297,6 +351,70 @@ class APOD_fragment : Fragment() {
         viewLifecycleOwner.lifecycleScope.launch {
             updateStar()
         }
+    }
+
+
+    private fun extractVideoId(videoUrl: String): String? {
+        val embedPattern = Pattern.compile("^https:\\/\\/www\\.youtube\\.com\\/embed\\/([^#&?]*).*")
+        val regularPattern = Pattern.compile(
+            "^https:\\/\\/(www\\.)?(youtube\\.com\\/watch\\?v=|youtu\\.be\\/|youtube\\.com\\/embed\\/)([^#&?]*).*",
+            Pattern.CASE_INSENSITIVE
+        )
+
+        val embedMatcher = embedPattern.matcher(videoUrl)
+        if (embedMatcher.matches()) {
+            return embedMatcher.group(1)
+        }
+
+        val matcher = regularPattern.matcher(videoUrl)
+        return if (matcher.matches()) {
+            matcher.group(3)
+        } else {
+            null
+        }
+    }
+
+    private fun loadVideoInWebView(videoId: String) {
+        val embedUrl = "https://www.youtube.com/embed/$videoId"
+        Log.d(TAG, "Embed URL: $embedUrl")
+
+        val frameVideo = """
+        <!DOCTYPE html>
+        <html>
+        <head>
+        <style>
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+        html, body, iframe {
+            width: 100%;
+            height: 100%;
+        }
+        </style>
+        </head>
+        <body>
+        <iframe src="$embedUrl" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+        </body>
+        </html>
+    """.trimIndent()
+
+        binding.webView?.apply {
+            loadDataWithBaseURL(null, frameVideo, "text/html", "utf-8", null)
+            visibility = View.VISIBLE
+        }
+    }
+
+
+    private fun getEmbedUrl(videoId: String): String {
+        return "https://www.youtube.com/embed/$videoId"
+    }
+
+    override fun onDestroyView() {
+        binding.webView?.destroy()
+        super.onDestroyView()
+        _binding = null
     }
 
     private suspend fun updateStar(){
