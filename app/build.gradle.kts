@@ -52,6 +52,8 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.7.0")
     implementation("androidx.activity:activity-ktx:1.9.0")
     implementation("androidx.fragment:fragment-ktx:1.6.2")
+    implementation ("androidx.datastore:datastore-preferences:1.0.0-alpha06")
+
     //implementation("com.squareup.retrofit2:retrofit:2.9.0")
     implementation("com.squareup.retrofit2:retrofit:2.11.0")
     // Gson converter for Retrofit
