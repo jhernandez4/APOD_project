@@ -1,13 +1,17 @@
 package edu.fullerton.csu.astronomypictureoftheday
 
+import android.Manifest
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
+import android.app.AlertDialog
 import android.graphics.Point
 import android.graphics.Rect
 import android.graphics.RectF
 import android.content.Context
+import android.content.Intent
+import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
 import androidx.lifecycle.MutableLiveData
@@ -33,8 +37,12 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import android.net.Uri
+import android.provider.MediaStore
+import android.provider.Settings
 import android.widget.ImageView
 import android.text.method.ScrollingMovementMethod
+import android.widget.Toast
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.setFragmentResultListener
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -56,7 +64,7 @@ class APOD_fragment : Fragment() {
 
     private var _binding: FragmentApodBinding? = null
     private val binding
-        get() = checkNotNull(_binding){
+        get() = checkNotNull(_binding) {
             "Cannot access binding because it is null. Is the view visible?"
         }
 
@@ -92,9 +100,30 @@ class APOD_fragment : Fragment() {
         setFragmentResultListener(CalendarDatePicker.REQUEST_KEY_DATE) { _, bundle ->
             val newDate = bundle.getSerializable(CalendarDatePicker.BUNDLE_KEY_DATE) as Calendar
             Log.d(TAG, "Date picked is ${newDate.time}")
-            dateViewModel.setDate(newDate.get(Calendar.YEAR), newDate.get(Calendar.MONTH), newDate.get(Calendar.DAY_OF_MONTH))
+            dateViewModel.setDate(
+                newDate.get(Calendar.YEAR),
+                newDate.get(Calendar.MONTH),
+                newDate.get(Calendar.DAY_OF_MONTH)
+            )
             updateUI()
             dateViewModel.fetchPicture() // Call fetchPicture() when the date changes
+        }
+
+        binding.btnFavorite.setOnClickListener {
+            viewLifecycleOwner.lifecycleScope.launch {
+                if (dateViewModel.getFavoriteCount() == 1) {
+                    dateViewModel.deleteFavorite(dateViewModel.getCurrentDateFormatted())
+                } else {
+                    dateViewModel.addFavorite(binding.tvTitle.text.toString())
+                }
+                // Update star UI
+                updateStar()
+            }
+        }
+        // Set long press listener on the image to request storage permission
+        binding.ivImage.setOnLongClickListener {
+            requestStoragePermission()
+            true // Indicate that the long press event is consumed.
         }
     }
 
@@ -168,7 +197,7 @@ class APOD_fragment : Fragment() {
                 }
             }
 
-            btnList.setOnClickListener{
+            btnList.setOnClickListener {
                 findNavController().navigate(R.id.show_favorites)
             }
 
@@ -184,7 +213,7 @@ class APOD_fragment : Fragment() {
             }
 
             // This button requires safe call operator
-            btnCurrent?.setOnClickListener{
+            btnCurrent?.setOnClickListener {
                 dateViewModel.setCurrentDate()
                 updateUI()
             }
@@ -204,8 +233,7 @@ class APOD_fragment : Fragment() {
         currentAnimator?.cancel()
 
         val drawable = thumbView.drawable
-        if (drawable is BitmapDrawable)
-        {
+        if (drawable is BitmapDrawable) {
             val bitmap = drawable.bitmap
         }
 
@@ -279,9 +307,17 @@ class APOD_fragment : Fragment() {
                     binding.expandedImage,
                     View.X,
                     startBounds.left,
-                    finalBounds.left)
+                    finalBounds.left
+                )
             ).apply {
-                with(ObjectAnimator.ofFloat(binding.expandedImage, View.Y, startBounds.top, finalBounds.top))
+                with(
+                    ObjectAnimator.ofFloat(
+                        binding.expandedImage,
+                        View.Y,
+                        startBounds.top,
+                        finalBounds.top
+                    )
+                )
                 with(ObjectAnimator.ofFloat(binding.expandedImage, View.SCALE_X, startScale, 1f))
                 with(ObjectAnimator.ofFloat(binding.expandedImage, View.SCALE_Y, startScale, 1f))
             }
@@ -339,8 +375,9 @@ class APOD_fragment : Fragment() {
             }
         }
     }
-    private fun updateUI(){
-        binding.apply{
+
+    private fun updateUI() {
+        binding.apply {
             btnNext.isEnabled = !dateViewModel.isCurrentDate()
             btnPrev.isEnabled = !dateViewModel.isFirstDate()
             btnDatePicker.apply {
@@ -417,7 +454,7 @@ class APOD_fragment : Fragment() {
         _binding = null
     }
 
-    private suspend fun updateStar(){
+    private suspend fun updateStar() {
         withContext(Dispatchers.IO) {
             val favoriteCount = dateViewModel.getFavoriteCount()
             // Now update the UI on the main thread
@@ -428,7 +465,12 @@ class APOD_fragment : Fragment() {
             }
         }
     }
-    private fun setDismissLargeImageAnimation(thumbView: View, startBounds: RectF, startScale: Float) {
+
+    private fun setDismissLargeImageAnimation(
+        thumbView: View,
+        startBounds: RectF,
+        startScale: Float
+    ) {
         // When the zoomed-in image is tapped, it zooms down to the original
         // bounds and shows the thumbnail instead of the expanded image.
         binding.expandedImage.setOnClickListener {
@@ -469,6 +511,106 @@ class APOD_fragment : Fragment() {
                 start()
 
             }
+        }
+    }
+
+    private fun requestStoragePermission() {
+        if (ContextCompat.checkSelfPermission(
+                requireContext(),
+                Manifest.permission.WRITE_EXTERNAL_STORAGE
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            if (shouldShowRequestPermissionRationale(Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+                showExplanationDialog()
+            } else {
+                requestPermissions(
+                    arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE),
+                    REQUEST_STORAGE_PERMISSION_CODE
+                )
+            }
+        } else {
+            saveImageToStorage()
+        }
+    }
+
+    private fun showExplanationDialog() {
+        AlertDialog.Builder(context)
+            .setTitle("Permission Needed")
+            .setMessage("This permission is needed to save images to your device.")
+            .setPositiveButton("OK") { _, _ ->
+                requestPermissions(
+                    arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE),
+                    REQUEST_STORAGE_PERMISSION_CODE
+                )
+            }
+            .setNegativeButton("Cancel", null)
+            .create()
+            .show()
+    }
+
+    private fun showGoToSettingsDialog() {
+        AlertDialog.Builder(context)
+            .setTitle("Permission Denied")
+            .setMessage("This app needs storage permission to save images. Please enable it in app settings.")
+            .setPositiveButton("Settings") { dialog, which ->
+                showAppSettings()
+            }
+            .setNegativeButton("Cancel", null)
+            .create()
+            .show()
+    }
+
+    private fun showAppSettings() {
+        val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
+        val uri = Uri.fromParts("package", requireActivity().packageName, null)
+        intent.data = uri
+        startActivity(intent)
+    }
+
+    private fun saveImageToStorage() {
+        val drawable = binding.ivImage.drawable as? BitmapDrawable
+        val bitmap = drawable?.bitmap
+        if (bitmap != null) {
+            val savedImageURL = MediaStore.Images.Media.insertImage(
+                requireActivity().contentResolver,
+                bitmap,
+                "APOD_${System.currentTimeMillis()}",
+                "Image from Astronomy Picture of the Day"
+            )
+            if (savedImageURL != null) {
+                Toast.makeText(context, "Image Saved Successfully", Toast.LENGTH_SHORT).show()
+            } else {
+                Toast.makeText(context, "Failed to Save Image", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
+    companion object {
+        private const val REQUEST_STORAGE_PERMISSION_CODE = 101
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == REQUEST_STORAGE_PERMISSION_CODE) {
+            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                saveImageToStorage()
+            } else {
+                if (!shouldShowRequestPermissionRationale(Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+                    showGoToSettingsDialog()
+                } else {
+                    Toast.makeText(context, "Permission Denied", Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+        fun showAppSettings() {
+            val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
+            val uri = Uri.fromParts("package", requireActivity().packageName, null)
+            intent.data = uri
+            startActivity(intent)
         }
     }
 }
