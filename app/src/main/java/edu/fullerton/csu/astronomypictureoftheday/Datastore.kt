@@ -1,9 +1,10 @@
 import android.content.Context
 import androidx.datastore.core.DataStore
 import androidx.datastore.core.Serializer
-import androidx.datastore.dataStore
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import java.io.DataInputStream
+import java.io.DataOutputStream
 import java.io.InputStream
 import java.io.OutputStream
 
@@ -16,17 +17,19 @@ data class DateDatastore(
 object DateDatastoreSerializer : Serializer<DateDatastore> {
     override val defaultValue: DateDatastore = DateDatastore(0, 0, 0)
 
-    override suspend fun readFrom(input: InputStream): DateDatastore {
-        val month = input.readInt()
-        val day = input.readInt()
-        val year = input.readInt()
+    override fun readFrom(input: InputStream): DateDatastore {
+        val dataInput = DataInputStream(input)
+        val month = dataInput.readInt()
+        val day = dataInput.readInt()
+        val year = dataInput.readInt()
         return DateDatastore(month, day, year)
     }
 
-    override suspend fun writeTo(t: DateDatastore, output: OutputStream) {
-        output.writeInt(t.month)
-        output.writeInt(t.day)
-        output.writeInt(t.year)
+    override fun writeTo(t: DateDatastore, output: OutputStream) {
+        val dataOutput = DataOutputStream(output)
+        dataOutput.writeInt(t.month)
+        dataOutput.writeInt(t.day)
+        dataOutput.writeInt(t.year)
     }
 }
 
