@@ -317,7 +317,7 @@ class APOD_fragment : Fragment() {
                     videoId?.let {
                         loadVideoInWebView(getEmbedUrl(it))
                         binding.ivImage.visibility = View.GONE
-                        binding.webView?.visibility = View.VISIBLE
+                        binding.webView.visibility = View.VISIBLE
                     }
                 } else {
                     Glide.with(this@APOD_fragment)
@@ -334,7 +334,7 @@ class APOD_fragment : Fragment() {
                     binding.tvTitle.text = astronomyPicture.title
 
                     binding.ivImage.visibility = View.VISIBLE
-                    binding.webView?.visibility = View.GONE
+                    binding.webView.visibility = View.GONE
                 }
             }
         }
