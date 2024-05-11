@@ -142,6 +142,15 @@ class APOD_ViewModel(application: Application, private val savedStateHandle: Sav
         fetchPicture()
     }
 
+    fun setDateFromFormatted(date: String){
+        val parts = date.split("/")
+        val month = parts[0].toInt() - 1
+        val day = parts[1].toInt()
+        val year = parts[2].toInt()
+        setDate(year, month, day)
+        fetchPicture()
+    }
+
     fun getCurrentDateFormatted(): String {
         val month = currentDate.get(Calendar.MONTH)
         val day = currentDate.get(Calendar.DAY_OF_MONTH)
