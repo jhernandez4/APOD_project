@@ -40,6 +40,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import com.bumptech.glide.Glide
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -53,6 +54,7 @@ private const val TAG = "APOD_fragment"
 class APOD_fragment : Fragment() {
 
     private val dateViewModel: APOD_ViewModel by viewModels()
+    private val args: APOD_fragmentArgs by navArgs()
 
     private var _binding: FragmentApodBinding? = null
     private val binding
@@ -123,6 +125,9 @@ class APOD_fragment : Fragment() {
     private fun initObservers() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                if (args.favoriteDate != ""){
+                    dateViewModel.setDateFromFormatted(args.favoriteDate)
+                }
                 val apiKey = loadApiKey(requireContext())
                 dateViewModel.setApiKeyFromContext(requireContext())
                 observePicture()
@@ -141,19 +146,19 @@ class APOD_fragment : Fragment() {
                 }
             }
         }
-        dateViewModel.eventPlayVideo.observe(viewLifecycleOwner) { videoId ->
-            Log.d(TAG, "Observing video playback event")
-            if (videoId != null && videoId != "") {
-                val cleanVideoId = extractVideoId(videoId)
-                Log.d(TAG, "Video ID received: $cleanVideoId")
-                loadVideoInWebView(cleanVideoId ?: videoId)
-                binding.ivImage.visibility = View.GONE
-                binding.webView?.visibility = View.VISIBLE
-            } else {
-                Log.d(TAG, "Received null Video ID, not displaying video")
-                binding.webView?.visibility = View.GONE
-            }
-        }
+//        dateViewModel.eventPlayVideo.observe(viewLifecycleOwner) { videoId ->
+//            Log.d(TAG, "Observing video playback event")
+//            if (videoId != null && videoId != "") {
+//                val cleanVideoId = extractVideoId(videoId)
+//                Log.d(TAG, "Video ID received: $cleanVideoId")
+//                loadVideoInWebView(cleanVideoId ?: videoId)
+//                binding.ivImage.visibility = View.GONE
+//                binding.webView?.visibility = View.VISIBLE
+//            } else {
+//                Log.d(TAG, "Received null Video ID, not displaying video")
+//                binding.webView?.visibility = View.GONE
+//            }
+//        }
     }
 
     private fun setupUI() {
@@ -315,12 +320,7 @@ class APOD_fragment : Fragment() {
                 binding.tvDesc.text = astronomyPicture.explanation
                 binding.tvTitle.text = astronomyPicture.title
                 if (astronomyPicture.media_type == "video") {
-                    val videoId = extractVideoId(astronomyPicture.url)
-                    videoId?.let {
-                        loadVideoInWebView(getEmbedUrl(it))
-                        binding.ivImage.visibility = View.GONE
-                        binding.webView.visibility = View.VISIBLE
-                    }
+                    observeVideo()
                 } else {
                     Glide.with(this@APOD_fragment)
                         .load(astronomyPicture.url)
@@ -335,6 +335,22 @@ class APOD_fragment : Fragment() {
                     binding.ivImage.visibility = View.VISIBLE
                     binding.webView.visibility = View.GONE
                 }
+            }
+        }
+    }
+
+    private fun observeVideo(){
+        dateViewModel.eventPlayVideo.observe(viewLifecycleOwner) { videoId ->
+            Log.d(TAG, "Observing video playback event")
+            if (videoId != null && videoId != "") {
+                val cleanVideoId = extractVideoId(videoId)
+                Log.d(TAG, "Video ID received: $cleanVideoId")
+                loadVideoInWebView(cleanVideoId ?: videoId)
+                binding.ivImage.visibility = View.GONE
+                binding.webView?.visibility = View.VISIBLE
+            } else {
+                Log.d(TAG, "Received null Video ID, not displaying video")
+                binding.webView?.visibility = View.GONE
             }
         }
     }
