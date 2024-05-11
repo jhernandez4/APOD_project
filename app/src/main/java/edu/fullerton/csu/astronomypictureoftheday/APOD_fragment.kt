@@ -141,7 +141,7 @@ class APOD_fragment : Fragment() {
                 }
             }
         }
-        dateViewModel.eventPlayVideo.observe(viewLifecycleOwner, { videoId ->
+        dateViewModel.eventPlayVideo.observe(viewLifecycleOwner) { videoId ->
             Log.d(TAG, "Observing video playback event")
             if (videoId != null && videoId != "") {
                 val cleanVideoId = extractVideoId(videoId)
@@ -153,7 +153,7 @@ class APOD_fragment : Fragment() {
                 Log.d(TAG, "Received null Video ID, not displaying video")
                 binding.webView?.visibility = View.GONE
             }
-        })
+        }
     }
 
     private fun setupUI() {
