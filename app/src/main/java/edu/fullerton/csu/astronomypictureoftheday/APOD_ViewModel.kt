@@ -62,7 +62,9 @@ class APOD_ViewModel(application: Application, private val savedStateHandle: Sav
                         response.body()?.let { apod ->
                             if (apod.media_type == "video") {
                                 eventPlayVideo.postValue(apod.url) // Trigger event to play video
+                                currentPicture.postValue(apod) // Post for title/description titles
                             } else {
+                                eventPlayVideo.postValue("")
                                 currentPicture.postValue(apod) // Update LiveData with the image data
                             }
                         }
