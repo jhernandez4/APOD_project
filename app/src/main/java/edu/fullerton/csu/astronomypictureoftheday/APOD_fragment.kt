@@ -169,7 +169,7 @@ class APOD_fragment : Fragment() {
             }
 
             btnList.setOnClickListener{
-                findNavController().navigate(R.id.show_favorites)
+                findNavController().navigate(APOD_fragmentDirections.showFavorites())
             }
 
             btnPrev.setOnClickListener {
