@@ -143,7 +143,7 @@ class APOD_fragment : Fragment() {
         }
         dateViewModel.eventPlayVideo.observe(viewLifecycleOwner, { videoId ->
             Log.d(TAG, "Observing video playback event")
-            if (videoId != null) {
+            if (videoId != null && videoId != "") {
                 val cleanVideoId = extractVideoId(videoId)
                 Log.d(TAG, "Video ID received: $cleanVideoId")
                 loadVideoInWebView(cleanVideoId ?: videoId)
