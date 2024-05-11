@@ -11,6 +11,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import edu.fullerton.csu.astronomypictureoftheday.databinding.FragmentFavoriteListBinding
 import kotlinx.coroutines.launch
@@ -43,7 +44,10 @@ class FavoriteListFragment : Fragment() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED){
                     favoriteListViewModel.favorites.collect{favorites ->
-                        binding.favoriteRecyclerView.adapter = FavoriteListAdapter(favorites)
+                        binding.favoriteRecyclerView.adapter =
+                            FavoriteListAdapter(favorites) { favoriteDate ->
+                            findNavController().navigate(FavoriteListFragmentDirections.showSingleFavorite(favoriteDate))
+                        }
                     }
 
             }
