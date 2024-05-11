@@ -312,6 +312,8 @@ class APOD_fragment : Fragment() {
     private fun observePicture() {
         dateViewModel.currentPicture.observe(viewLifecycleOwner) { astronomyPicture ->
             if (astronomyPicture != null) {
+                binding.tvDesc.text = astronomyPicture.explanation
+                binding.tvTitle.text = astronomyPicture.title
                 if (astronomyPicture.media_type == "video") {
                     val videoId = extractVideoId(astronomyPicture.url)
                     videoId?.let {
@@ -330,9 +332,6 @@ class APOD_fragment : Fragment() {
                         .placeholder(R.drawable.placeholder_background)
                         .error(R.drawable.error_image_background)
                         .into(binding.expandedImage)
-                    binding.tvDesc.text = astronomyPicture.explanation
-                    binding.tvTitle.text = astronomyPicture.title
-
                     binding.ivImage.visibility = View.VISIBLE
                     binding.webView.visibility = View.GONE
                 }
