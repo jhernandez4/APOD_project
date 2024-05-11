@@ -16,6 +16,10 @@
         <action
             android:id="@+id/show_favorites"
             app:destination="@id/favoriteListFragment" />
+        <argument
+            android:name="favoriteDate"
+            app:argType="string"
+            android:defaultValue=""/>
     </fragment>
     <dialog
         android:id="@+id/calendarDatePicker"
@@ -29,5 +33,9 @@
         android:id="@+id/favoriteListFragment"
         android:name="edu.fullerton.csu.astronomypictureoftheday.FavoriteListFragment"
         android:label="FavoriteListFragment"
-        tools:layout="@layout/fragment_favorite_list"/>
+        tools:layout="@layout/fragment_favorite_list">
+        <action
+            android:id="@+id/show_single_favorite"
+            app:destination="@id/APOD_fragment" />
+    </fragment>
 </navigation>
