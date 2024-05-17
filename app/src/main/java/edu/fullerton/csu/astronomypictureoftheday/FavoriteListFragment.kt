@@ -42,17 +42,32 @@ class FavoriteListFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         viewLifecycleOwner.lifecycleScope.launch {
-            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED){
-                    favoriteListViewModel.favorites.collect{favorites ->
-                        binding.favoriteRecyclerView.adapter =
-                            FavoriteListAdapter(favorites) { favoriteDate ->
-                            findNavController().navigate(FavoriteListFragmentDirections.showSingleFavorite(favoriteDate))
-                        }
-                    }
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                favoriteListViewModel.favorites.collect { favorites ->
+                    binding.favoriteRecyclerView.adapter =
+                        FavoriteListAdapter(
+                            favorites,
+                            onCrimeClicked = { favoriteDate ->
+                                findNavController().navigate(
+                                    FavoriteListFragmentDirections.showSingleFavorite(
+                                        favoriteDate
+                                    )
+                                )
+                            },
+
+                            onCrimeLongClicked = { favoriteDate ->
+                                viewLifecycleOwner.lifecycleScope.launch {
+                                    favoriteListViewModel.deleteFavorite(favoriteDate)
+                                }
+
+                            })
+
+                }
 
             }
         }
     }
+
 
     override fun onDestroyView() {
         super.onDestroyView()

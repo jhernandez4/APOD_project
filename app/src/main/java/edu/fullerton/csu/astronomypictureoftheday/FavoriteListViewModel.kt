@@ -11,7 +11,17 @@ import java.util.GregorianCalendar
 import java.util.UUID
 
 class FavoriteListViewModel : ViewModel() {
+
+
     private val favoriteRepository = FavoriteRepository.get()
+
+     suspend fun deleteFavorite(favoriteDate: String) {
+         viewModelScope.launch {
+
+             favoriteRepository.deleteFavorite(favoriteDate)
+         }
+
+    }
 
     private val _favorites: MutableStateFlow<List<Favorite>> = MutableStateFlow(emptyList())
     val favorites: StateFlow<List<Favorite>>

@@ -8,14 +8,19 @@ import java.util.Calendar
 
 class FavoriteHolder (private val binding: ListItemFavoriteBinding)
     : RecyclerView.ViewHolder(binding.root){
-        fun bind(favorite: Favorite, onCrimeClicked: (favoriteDate: String) -> Unit) {
-            val dateFormatted = formatDate(favorite.date)
-            binding.favoriteTitle.text = favorite.title
-            binding.favoriteDate.text = dateFormatted
-            binding.root.setOnClickListener{
-                onCrimeClicked(dateFormatted)
-            }
+    fun bind(favorite: Favorite, onCrimeClicked: (favoriteDate: String) -> Unit, onCrimeLongClicked: (favoriteDate: String) -> Unit) {
+        val dateFormatted = formatDate(favorite.date)
+        binding.favoriteTitle.text = favorite.title
+        binding.favoriteDate.text = dateFormatted
+        binding.root.setOnClickListener{
+            onCrimeClicked(dateFormatted)
         }
+        binding.root.setOnLongClickListener{
+            onCrimeLongClicked(dateFormatted)
+
+            true
+        }
+    }
 
     fun formatDate(date: Calendar) : String{
         val year = date.get(Calendar.YEAR)
@@ -29,7 +34,9 @@ class FavoriteHolder (private val binding: ListItemFavoriteBinding)
 }
 class FavoriteListAdapter(
     private val favorites: List<Favorite>,
-    private val onCrimeClicked: (favoriteDate: String) -> Unit
+    private val onCrimeClicked: (favoriteDate: String) -> Unit,
+    private val onCrimeLongClicked: (favoriteDate: String) -> Unit
+
 ) : RecyclerView.Adapter<FavoriteHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FavoriteHolder {
         val inflater = LayoutInflater.from(parent.context)
@@ -39,7 +46,7 @@ class FavoriteListAdapter(
 
     override fun onBindViewHolder(holder: FavoriteHolder, position: Int) {
         val favorite = favorites[position]
-        holder.bind(favorite, onCrimeClicked)
+        holder.bind(favorite, onCrimeClicked, onCrimeLongClicked)
     }
 
     override fun getItemCount() = favorites.size
