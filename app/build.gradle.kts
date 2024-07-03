@@ -15,8 +15,6 @@ android {
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
-        // Include YouTube API Key here as a manifest placeholder
-        manifestPlaceholders["youtube_api_key"] = "AIzaSyAnsWH0apNZVA5ZB8wU52yJTEMpT1i8Jzw"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
